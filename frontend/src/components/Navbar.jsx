@@ -16,6 +16,7 @@ const navLinks = [
 const Navbar = () => {
   return (
     <nav className="navbar">
+      <span className="navbar-logo">Echo</span>
       <NavLink to="/profile" className="navbar-avatar">
         <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
           <AvatarImage src="" alt="profile" />

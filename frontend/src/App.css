@@ -148,16 +148,31 @@
     }
   }
 
+  .navbar-logo {
+    display: none;
+  }
+
   .navbar-avatar {
     display: none;
   }
 
   @media (min-width: 768px) {
+    .navbar-logo {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.275rem;
+      color: #f6f4eb;
+      letter-spacing: 0.05em;
+      padding-top: 28px;
+      text-align: center;
+      width: 100%;
+    }
+
     .navbar-avatar {
       display: flex;
       justify-content: center;
       width: 100%;
-      margin-top: 34px;
+      margin-top: 20px;
       margin-bottom: 0;
     }
   }
