@@ -65,8 +65,6 @@ const DiscoverPage = () => {
       try {
         setLoading(true);
         const snapshot = await getDocs(collection(db, "users"));
-        console.log("DOCS:", snapshot.docs);
-        console.log("SIZE:", snapshot.size);
         const firebaseUsers = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
