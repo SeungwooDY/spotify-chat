@@ -36,6 +36,7 @@
   padding: 0.5rem;
   border-radius: 0.5rem;
   transition-duration: 0.4s;
+  margin: 1rem;
 }
 
 .create-button:hover {
@@ -110,7 +111,7 @@
 .new-post-form {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 6fr 0.5fr;
+  grid-template-rows: 1fr 5fr;
   place-items: center;
   justify-content: center;
   position: absolute; /* Takes the div out of the flow */
@@ -118,10 +119,26 @@
   left: 50%; 
   transform: translate(-50%, -50%);       
   z-index: 3; /* this one overlays the background */
-  height: 45rem;
-  width: 40rem;
+  height: 25rem;
+  width: 25rem;
   border-radius: 10px;
   box-shadow: 2px 2px 12px 1px #d2d2d2;
-  background-color: var(--light-tan);
-  overflow: auto
+  background-color: var(--tan);
+  overflow: auto;
+}
+
+.new-post-title {
+  font-size: 2rem;
+  padding-top: 0.5rem;
+}
+
+.new-post-textbox {
+  width: 20rem;
+  height: 3rem;
+  border: 1px solid gray;
+  border-radius: 0.5rem;
+  padding-left: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
 }
