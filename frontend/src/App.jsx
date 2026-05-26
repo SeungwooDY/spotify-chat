@@ -1,21 +1,14 @@
-import { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Callback from './pages/Callback.jsx';
-import Dashboard from './pages/Dashboard.jsx';
-import './App.css'
+import "./App.css";
+import { Outlet } from "react-router-dom";
+import Navbar from "../src/components/Navbar.jsx";
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/callback" element={<Callback />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
-  )
+    <main className="ml-30">
+      <Navbar />
+      <Outlet />
+    </main>
+  );
 }
 
-export default App
+export default App;
