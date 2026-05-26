@@ -1,11 +1,15 @@
 import "../styling/Forum.css";
 import { Textarea } from "./ui/textarea";
+import {X} from "lucide-react"
 
 const CreatePost = ( {closeForm} ) => {
   return (
     <>
       <section className="form-overlay">
         <div className="new-post-form">
+          <X className="exit-icon" 
+          onClick={()=>closeForm(prevState=>!prevState)}/>
+          
           <h1 className="new-post-title">Create Post</h1>
 
           <div style={{display: "flex", flexDirection: "column", alignItems:"center"}}>
