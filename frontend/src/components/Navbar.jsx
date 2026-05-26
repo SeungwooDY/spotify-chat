@@ -10,6 +10,7 @@ const navLinks = [
   { to: "/", label: "Discover", end: true },
   { to: "/inbox", label: "Inbox" },
   { to: "/forum", label: "Forum" },
+  { to: "/login", label: "Logout" },
 ];
 
 const Navbar = () => {
