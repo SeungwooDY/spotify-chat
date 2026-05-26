@@ -11,13 +11,13 @@ export default function Callback() {
     const error = params.get('error');
 
     if (error) {
-      navigate('/?error=' + error, { replace: true });
+      navigate('/login?error=' + error, { replace: true });
     } else if (access) {
       sessionStorage.setItem('access_token', access);
       sessionStorage.setItem('refresh_token', refresh);
-      navigate('/dashboard', { replace: true });  // ← this both navigates AND clears the hash
-    } else {
       navigate('/', { replace: true });
+    } else {
+      navigate('/login', { replace: true });
     }
   }, [navigate]);
 
