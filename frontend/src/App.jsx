@@ -4,10 +4,12 @@ import Navbar from "../src/components/Navbar.jsx";
 
 function App() {
   return (
-    <main className="ml-30">
+    <div className="min-h-screen pb-16 md:pb-0 md:pl-[120px]">
       <Navbar />
-      <Outlet />
-    </main>
+      <main>
+        <Outlet />
+      </main>
+    </div>
   );
 }
 
