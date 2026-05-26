@@ -21,6 +21,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
 function requireAuth() {
+  if (import.meta.env.VITE_MOCK_DATA === 'true') return null;
   if (!sessionStorage.getItem('access_token')) {
     return redirect('/login');
   }
