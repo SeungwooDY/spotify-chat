@@ -1,18 +1,26 @@
 :root {
   --dark-blue: #4682A9;
+  --tan: #f6f4eb;
 }
 .navbar-container {
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 1000; /* Ensures it stays above other content */
   background-color: var(--dark-blue);
   width: 10rem;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
 }
 
 .nav-text {
   display: flex;
   flex-direction: column;
+  padding-bottom: 3rem;
+  gap: 1rem;
 }
 
 .nav-link {
