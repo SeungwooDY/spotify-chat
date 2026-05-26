@@ -5,6 +5,7 @@ import CreatePost from "@/components/CreatePost";
 
 const ForumPage = () => {
   const [searchText, setSearchText] = useState("");
+  const [openForm, setOpenForm] = useState(false);
 
   return (
     <>
@@ -22,7 +23,11 @@ const ForumPage = () => {
           >
           </input>
 
-          <button className="create-button" aria-label="create post" label="create post">create post</button>
+          <button 
+          onClick={() => setOpenForm(prevState => !prevState)}
+          className="create-button" 
+          aria-label="create post" 
+          label="create post">create post</button>
         </section>
         
         <section className="post-container">
@@ -32,6 +37,7 @@ const ForumPage = () => {
           <ForumPost postTitle={"title"}/>
           <ForumPost postTitle={"title"}/>
         </section>
+        {openForm ? <CreatePost closeForm={setOpenForm}/> : null}
       </section>
     </>
   );

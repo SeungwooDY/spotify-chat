@@ -5,7 +5,6 @@ const ForumPost = ( {postTitle} ) => {
     <>
       <div className="post">
         <section className="post-header">{postTitle}</section>
-        
       </div>
     </>
   );
