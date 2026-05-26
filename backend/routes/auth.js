@@ -7,7 +7,7 @@ const router = express.Router();
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_uri = 'http://127.0.0.1:3000/callback';
-const frontend_uri = 'http://localhost:5173';
+const frontend_uri = 'http://127.0.0.1:5173';
 
 function generateRandomString(length) {
   return crypto.randomBytes(60).toString('hex').slice(0, length);
@@ -56,14 +56,14 @@ router.get('/callback', async (req, res) => {
   });
   if (!tokenResponse.ok) throw new Error(`Spotify token error: ${tokenResponse.status}`);
   const data = await tokenResponse.json();
-    res.redirect(frontend_uri + '/#' +
+    res.redirect(frontend_uri + '/callback#' +
       querystring.stringify({
         access_token: data.access_token,
         refresh_token: data.refresh_token
       }));
   } catch (err) {
     console.error(err);
-    res.redirect(frontend_uri + '/#' + querystring.stringify({ error: 'invalid_token' }));
+    res.redirect(frontend_uri + '/callback#' + querystring.stringify({ error: 'invalid_token' }));
   }
 });
 
