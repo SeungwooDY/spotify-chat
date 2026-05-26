@@ -37,6 +37,14 @@ const Navbar = () => {
             {label}
           </NavLink>
         ))}
+        <NavLink to="/profile" className="navbar-profile-mobile">
+          <Avatar className="h-9 w-9 border border-black bg-[#E5E5E5]">
+            <AvatarImage src="" alt="profile" />
+            <AvatarFallback className="bg-[#E5E5E5]">
+              <User className="h-4 w-4 text-[#222222]" strokeWidth={2.5} />
+            </AvatarFallback>
+          </Avatar>
+        </NavLink>
       </div>
     </nav>
   );
