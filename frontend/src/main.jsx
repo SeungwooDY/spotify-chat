@@ -18,6 +18,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import Login from './pages/Login.jsx';
 import Callback from './pages/Callback.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 function requireAuth() {
   if (!sessionStorage.getItem('access_token')) {
@@ -77,7 +78,10 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
+  
+    <StrictMode>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </StrictMode>
 )
