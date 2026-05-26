@@ -32,10 +32,10 @@ const ProfilePage = () => {
   const [isPublic, setIsPublic] = useState(mockUser.publicProfile);
 
   return (
-    <div className="min-h-screen bg-[#F4F2EA] px-16 py-8">
-      <div className="mx-auto grid max-w-[920px] grid-cols-[1fr_1.25fr] gap-12">
+    <div className="min-h-screen bg-[#F4F2EA] px-6 pt-8 pb-28 md:px-12 lg:px-16 lg:py-12">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-[1fr_1.25fr] md:gap-16">
         <section className="flex flex-col items-center">
-          <Avatar className="h-[120px] w-[120px] border border-[#202124] bg-[#D9D9D9]">
+          <Avatar className="h-30 w-30 border border-[#202124] bg-[#D9D9D9]">
             <AvatarImage src="" alt="profile" />
             <AvatarFallback className="bg-[#D9D9D9]">
               <User className="h-16 w-16 text-[#202124]" strokeWidth={2.5} />
@@ -77,7 +77,6 @@ const ProfilePage = () => {
             </div>
           </div>
         </section>
-
         <section className="flex flex-col gap-5">
           <FeaturedCard
             title="Featured artists"
@@ -153,16 +152,18 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
 
 const ArtistOption = ({ name, selected }) => {
   return (
-    <button className="relative flex flex-col items-center">
-      <div
-        className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
-          selected ? "ring-4 ring-[#4B8DB3]" : ""
-        }`}
-      >
-        <User className="h-7 w-7 text-[#202124]" strokeWidth={2.5} />
-      </div>
+    <button className="flex flex-col items-center">
+      <div className="relative">
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
+            selected ? "ring-4 ring-[#4B8DB3]" : ""
+          }`}
+        >
+          <User className="h-7 w-7 text-[#202124]" strokeWidth={2.5} />
+        </div>
 
-      {selected && <SelectionCheck />}
+        {selected && <SelectionCheck />}
+      </div>
 
       <p className="mt-2 text-center text-[11px] leading-tight text-[#0F1F2F]">
         {name}
@@ -173,16 +174,18 @@ const ArtistOption = ({ name, selected }) => {
 
 const SongOption = ({ name, selected }) => {
   return (
-    <button className="relative flex flex-col items-center">
-      <div
-        className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
-          selected ? "ring-4 ring-[#4B8DB3]" : ""
-        }`}
-      >
-        <Play className="ml-1 h-7 w-7 text-[#202124]" strokeWidth={1.75} />
-      </div>
+    <button className="flex flex-col items-center">
+      <div className="relative">
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
+            selected ? "ring-4 ring-[#4B8DB3]" : ""
+          }`}
+        >
+          <Play className="ml-1 h-7 w-7 text-[#202124]" strokeWidth={1.75} />
+        </div>
 
-      {selected && <SelectionCheck />}
+        {selected && <SelectionCheck />}
+      </div>
 
       <p className="mt-2 text-center text-[11px] leading-tight text-[#0F1F2F]">
         {name}
@@ -193,10 +196,9 @@ const SongOption = ({ name, selected }) => {
 
 const SelectionCheck = () => {
   return (
-    <div className="absolute right-3 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#4B8DB3]">
+    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#4B8DB3]">
       <Check className="h-3 w-3 text-white" strokeWidth={3} />
     </div>
   );
 };
-
 export default ProfilePage;
