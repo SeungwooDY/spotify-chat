@@ -1,6 +1,7 @@
 import "../styling/Forum.css";
 import { useState } from 'react';
 import ForumPost from "../components/ForumPost";
+import CreatePost from "@/components/CreatePost";
 
 const ForumPage = () => {
   const [searchText, setSearchText] = useState("");
@@ -31,7 +32,6 @@ const ForumPage = () => {
           <ForumPost postTitle={"title"}/>
           <ForumPost postTitle={"title"}/>
         </section>
-
       </section>
     </>
   );
