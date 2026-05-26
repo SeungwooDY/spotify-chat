@@ -4,7 +4,7 @@ import Navbar from "../src/components/Navbar.jsx";
 
 function App() {
   return (
-    <main className="ml-30">
+    <main className="md:ml-[120px]">
       <Navbar />
       <Outlet />
     </main>
