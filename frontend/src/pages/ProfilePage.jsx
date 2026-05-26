@@ -132,7 +132,7 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
             <p className="mt-2 text-sm text-[#5F6368]">{subtitle}</p>
           </div>
 
-          <div className="flex flex-wrap gap-2 sm:flex-col">
+          <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
             {buttonLabels.map((label) => (
               <Button
                 key={label}
