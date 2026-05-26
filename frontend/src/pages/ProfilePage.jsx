@@ -33,7 +33,7 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F2EA] px-6 pt-8 pb-28 md:px-12 lg:px-16 lg:py-12">
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[1fr_1.25fr] md:gap-16">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.25fr] lg:gap-16">
         <section className="flex flex-col items-center">
           <Avatar className="h-30 w-30 border border-[#202124] bg-[#D9D9D9]">
             <AvatarImage src="" alt="profile" />
@@ -77,13 +77,14 @@ const ProfilePage = () => {
             </div>
           </div>
         </section>
-        <section className="flex flex-col gap-5">
+
+        <section className="mx-auto flex w-full max-w-155 flex-col gap-5 lg:mx-0">
           <FeaturedCard
             title="Featured artists"
             subtitle="Pick from your top artists"
             buttonLabels={["View top artists"]}
           >
-            <div className="grid grid-cols-4 gap-5">
+            <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
               {topArtists.map((artist) => (
                 <ArtistOption
                   key={artist.id}
@@ -99,7 +100,7 @@ const ProfilePage = () => {
             subtitle="Pick from your top songs"
             buttonLabels={["View top songs", "View liked songs"]}
           >
-            <div className="grid grid-cols-4 gap-5">
+            <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
               {topSongs.map((song) => (
                 <SongOption
                   key={song.id}
@@ -110,7 +111,7 @@ const ProfilePage = () => {
             </div>
           </FeaturedCard>
 
-          <Button className="ml-auto mt-2 bg-[#4B8DB3] text-xs text-white hover:bg-[#4B8DB3]/90">
+          <Button className="self-end bg-[#4B8DB3] text-xs text-white hover:bg-[#4B8DB3]/90">
             Save Changes
           </Button>
         </section>
@@ -121,9 +122,9 @@ const ProfilePage = () => {
 
 const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
   return (
-    <Card>
+    <Card className="w-full">
       <CardContent className="p-5">
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-2xl font-semibold leading-none text-[#0F1F2F]">
               {title}
@@ -131,7 +132,7 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
             <p className="mt-2 text-sm text-[#5F6368]">{subtitle}</p>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-2 sm:flex-col">
             {buttonLabels.map((label) => (
               <Button
                 key={label}
@@ -152,7 +153,7 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
 
 const ArtistOption = ({ name, selected }) => {
   return (
-    <button className="flex flex-col items-center">
+    <button className="flex w-20 flex-col items-center">
       <div className="relative">
         <div
           className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
@@ -174,7 +175,7 @@ const ArtistOption = ({ name, selected }) => {
 
 const SongOption = ({ name, selected }) => {
   return (
-    <button className="flex flex-col items-center">
+    <button className="flex w-20 flex-col items-center">
       <div className="relative">
         <div
           className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
@@ -201,4 +202,5 @@ const SelectionCheck = () => {
     </div>
   );
 };
+
 export default ProfilePage;
