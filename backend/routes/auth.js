@@ -2,12 +2,14 @@ import 'dotenv/config';
 import express from 'express';
 import querystring from 'querystring';
 import crypto from 'crypto';
+import db from '../firebase.js';
+import { doc, setDoc } from 'firebase/firestore';
 
 const router = express.Router();
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = 'http://127.0.0.1:3000/callback';
-const frontend_uri = 'http://127.0.0.1:5173';
+const redirect_uri = process.env.REDIRECT_URI || 'http://127.0.0.1:3000/callback';
+const frontend_uri = process.env.FRONTEND_URI || 'http://127.0.0.1:5173';
 
 function generateRandomString(length) {
   return crypto.randomBytes(60).toString('hex').slice(0, length);
@@ -16,7 +18,7 @@ function generateRandomString(length) {
 router.get('/login', (req, res) => {
   const state = generateRandomString(16);
   const scope = 'user-read-private user-read-email';
-  
+
   res.cookie('spotify_auth_state', state, { httpOnly: true });
 
   res.redirect('https://accounts.spotify.com/authorize?' +
@@ -32,16 +34,17 @@ router.get('/login', (req, res) => {
 router.get('/callback', async (req, res) => {
   const code = req.query.code || null;
   const state = req.query.state || null;
-  const storedState = req.cookies? req.cookies['spotify_auth_state'] : null;
+  const storedState = req.cookies ? req.cookies['spotify_auth_state'] : null;
 
   if (state === null || state !== storedState) {
     return res.redirect(frontend_uri + '/callback#' +
       querystring.stringify({ error: 'state_mismatch' }));
-  } 
+  }
 
   res.clearCookie('spotify_auth_state');
-  
+
   try {
+    // 1. Exchange the authorization code for tokens
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
       headers: {
@@ -53,9 +56,27 @@ router.get('/callback', async (req, res) => {
         redirect_uri,
         grant_type: 'authorization_code'
       })
-  });
-  if (!tokenResponse.ok) throw new Error(`Spotify token error: ${tokenResponse.status}`);
-  const data = await tokenResponse.json();
+    });
+    if (!tokenResponse.ok) throw new Error(`Spotify token error: ${tokenResponse.status}`);
+    const data = await tokenResponse.json();
+
+    // 2. Use access token to fetch user's Spotify profile
+    const profileResponse = await fetch('https://api.spotify.com/v1/me', {
+      headers: { 'Authorization': 'Bearer ' + data.access_token }
+    });
+    if (!profileResponse.ok) throw new Error(`Spotify profile error: ${profileResponse.status}`);
+    const profile = await profileResponse.json();
+
+    // 3. Add the user to Firestore
+    await setDoc(doc(db, 'users', profile.id), {
+      displayName: profile.display_name,
+      email: profile.email,
+      profileImage: profile.images?.[0]?.url || null,
+      spotifyId: profile.id,
+      lastLogin: new Date().toISOString(),
+    }, { merge: true });
+
+    // 4. Redirect to frontend with tokens
     res.redirect(frontend_uri + '/callback#' +
       querystring.stringify({
         access_token: data.access_token,

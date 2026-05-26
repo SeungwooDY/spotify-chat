@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Callback() {
   const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.substring(1));
@@ -13,8 +16,7 @@ export default function Callback() {
     if (error) {
       navigate('/login?error=' + error, { replace: true });
     } else if (access) {
-      sessionStorage.setItem('access_token', access);
-      sessionStorage.setItem('refresh_token', refresh);
+      login(access, refresh);
       navigate('/', { replace: true });
     } else {
       navigate('/login', { replace: true });
