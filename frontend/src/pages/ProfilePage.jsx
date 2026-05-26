@@ -50,7 +50,7 @@ const ProfilePage = () => {
             Edit Photo
           </Button>
 
-          <div className="mt-6 w-full max-w-[260px]">
+          <div className="mt-6 w-full max-w-65">
             <h1 className="text-2xl font-semibold text-[#0F1F2F]">
               {mockUser.name}
             </h1>
