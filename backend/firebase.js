@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import getFirestore from 'firebase/firestore';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import 'dotenv/config';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -22,4 +22,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// TODO: also export { doc, setDoc } so auth.js can use them for upserting users
 export default db;
