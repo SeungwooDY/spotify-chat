@@ -5,22 +5,32 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import db from "../firebase.js";
 
-const ProfileCard = ({ user }) => (
-  <div className="flex flex-col items-center p-4 rounded-xl cursor-pointer transition-colors hover:bg-muted">
-    {/* Centered avatar */}
-    <Avatar className="size-20">
-      <AvatarImage src={user.images?.[0]?.url} alt={user.display_name} />
-      <AvatarFallback className="bg-muted">
-        <User className="size-6 text-muted-foreground" />
-      </AvatarFallback>
-    </Avatar>
+import { Link } from "react-router-dom";
 
-    {/* Text block */}
-    <div className="w-full mt-2 text-left leading-tight">
-      <p className="text-sm font-medium truncate">{user.display_name}</p>
-      <p className="text-xs text-muted-foreground">profile</p>
+const ProfileCard = ({ user }) => (
+  <Link to={`/user/${user.id}`} className="block">
+    <div className="flex flex-col items-center p-4 rounded-xl transition-colors hover:bg-muted">
+
+      {/* Avatar centered */}
+      <Avatar className="size-20">
+        <AvatarImage src={user.images?.[0]?.url} alt={user.display_name} />
+        <AvatarFallback className="bg-muted">
+          <User className="size-6 text-muted-foreground" />
+        </AvatarFallback>
+      </Avatar>
+
+      {/* Text below, left-aligned */}
+      <div className="w-full mt-2 text-left leading-tight">
+        <p className="text-sm font-medium truncate">
+          {user.display_name}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          profile
+        </p>
+      </div>
+
     </div>
-  </div>
+  </Link>
 );
 
 const ProfileSection = ({ label, profiles, query }) => {
