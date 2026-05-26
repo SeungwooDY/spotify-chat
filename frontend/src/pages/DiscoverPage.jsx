@@ -90,7 +90,9 @@ const DiscoverPage = ({
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-8 gap-4">
-        <h1 className="text-5xl font-bold">Discover</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-none">
+          Discover
+        </h1>
 
         {/* Search bar */}
         <div className="relative flex items-center max-w-xs w-full">
