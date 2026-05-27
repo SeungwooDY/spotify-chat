@@ -46,7 +46,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!token) {
-      if (import.meta.env.VITE_MOCK_DATA === 'true') {
+      if (import.meta.env.VITE_MOCK_DATA === "true") {
         setProfile(MOCK_DATA.profile);
         setArtists(MOCK_DATA.artists);
         setTracks(MOCK_DATA.tracks);
@@ -173,7 +173,10 @@ const ProfilePage = () => {
                 <SongOption
                   key={track.id}
                   name={track.name}
-                  imageUrl={track.album?.images?.[2]?.url ?? track.album?.images?.[0]?.url}
+                  imageUrl={
+                    track.album?.images?.[2]?.url ??
+                    track.album?.images?.[0]?.url
+                  }
                   selected={selectedTracks.has(track.id)}
                   onToggle={() => toggleTrack(track.id)}
                 />
@@ -240,7 +243,11 @@ const ArtistOption = ({ name, imageUrl, selected, onToggle }) => {
           }`}
         >
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="h-full w-full object-cover" />
+            <img
+              src={imageUrl}
+              alt={name}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <User className="h-7 w-7 text-[#202124]" strokeWidth={2.5} />
           )}
@@ -264,7 +271,11 @@ const SongOption = ({ name, imageUrl, selected, onToggle }) => {
           }`}
         >
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className="h-full w-full object-cover" />
+            <img
+              src={imageUrl}
+              alt={name}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <Play className="ml-1 h-7 w-7 text-[#202124]" strokeWidth={1.75} />
           )}

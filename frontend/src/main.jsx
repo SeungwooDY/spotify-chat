@@ -1,88 +1,86 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
   redirect,
   RouterProvider,
-} from 'react-router-dom'
-import App from './App.jsx'
+} from "react-router-dom";
+import App from "./App.jsx";
 
 // pages
-import LikedSongsPage from './pages/LikedSongsPage.jsx';
-import DiscoverPage from './pages/DiscoverPage.jsx';
-import TopArtistsPage from './pages/TopArtistsPage.jsx';
-import ForumPage from './pages/ForumPage.jsx';
-import TopSongsPage from './pages/TopSongsPage.jsx';
-import InboxPage from './pages/InboxPage.jsx';
-import ProfilePage from './pages/ProfilePage.jsx';
-import Login from './pages/Login.jsx';
-import Callback from './pages/Callback.jsx';
-import Dashboard from './pages/Dashboard.jsx';
-import { AuthProvider } from './context/AuthContext.jsx';
+import LikedSongsPage from "./pages/LikedSongsPage.jsx";
+import DiscoverPage from "./pages/DiscoverPage.jsx";
+import TopArtistsPage from "./pages/TopArtistsPage.jsx";
+import ForumPage from "./pages/ForumPage.jsx";
+import TopSongsPage from "./pages/TopSongsPage.jsx";
+import InboxPage from "./pages/InboxPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import Login from "./pages/Login.jsx";
+import Callback from "./pages/Callback.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 function requireAuth() {
-  if (import.meta.env.VITE_MOCK_DATA === 'true') return null;
-  if (!sessionStorage.getItem('access_token')) {
-    return redirect('/login');
+  if (!sessionStorage.getItem("access_token")) {
+    return redirect("/login");
   }
   return null;
 }
 
 const router = createBrowserRouter([
   {
-    path: '/login',
+    path: "/login",
     element: <Login />,
   },
   {
-    path: '/callback',
+    path: "/callback",
     element: <Callback />,
   },
   {
-    path: '/',
+    path: "/",
     element: <App />,
     loader: requireAuth,
     children: [
       {
         index: true,
-        element: <DiscoverPage />
+        element: <DiscoverPage />,
       },
       {
         path: "liked-songs",
-        element: <LikedSongsPage />
+        element: <LikedSongsPage />,
       },
       {
         path: "top-artists",
-        element: <TopArtistsPage />
+        element: <TopArtistsPage />,
       },
       {
         path: "forum",
-        element: <ForumPage />
+        element: <ForumPage />,
       },
       {
         path: "top-songs",
-        element: <TopSongsPage />
+        element: <TopSongsPage />,
       },
       {
         path: "inbox",
-        element: <InboxPage />
+        element: <InboxPage />,
       },
       {
         path: "profile",
-        element: <ProfilePage />
+        element: <ProfilePage />,
       },
       {
         path: "dashboard",
-        element: <Dashboard />
+        element: <Dashboard />,
       },
     ],
   },
-])
+]);
 
-createRoot(document.getElementById('root')).render(
-  
-    <StrictMode>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </StrictMode>
-)
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  </StrictMode>,
+);
