@@ -18,6 +18,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import Login from './pages/Login.jsx';
 import Callback from './pages/Callback.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import UserProfilePage from './pages/UserProfilePage.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
 function requireAuth() {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <ProfilePage />
+      },
+      {
+        path: "user/:id",
+        element: <UserProfilePage />
       },
       {
         path: "dashboard",
