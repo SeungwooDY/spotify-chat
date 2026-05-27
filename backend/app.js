@@ -10,11 +10,12 @@ const app=express();
 // Specify a port number for the server
 const port=process.env.PORT || 3001;
 
-app.use(cors());
-app.use(cookieParser());
+app.use(cors({
+  origin: process.env.FRONTEND_URI || 'http://127.0.0.1:5173',
+  credentials: true,
+}));
 app.use(cookieParser());
 app.use(express.json());
-app.use('/', authRouter);
 
 app.use('/', authRouter);
 app.use('/api', spotifyRouter);

@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
   { to: "/liked-songs", label: "Liked Songs" },
@@ -14,15 +15,22 @@ const navLinks = [
 ];
 
 const Navbar = () => {
+  const { user } = useAuth();
+
   return (
     <nav className="navbar">
       <NavLink to="/profile" className="navbar-avatar">
-        <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
+        <img
+          src={user?.profileImage}
+          alt={user?.displayName}
+          className="h-20 w-20 rounded-full object-cover"
+        />
+        {/* <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
           <AvatarImage src="" alt="profile" />
           <AvatarFallback className="bg-[#E5E5E5]">
             <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
           </AvatarFallback>
-        </Avatar>
+        </Avatar> */}
       </NavLink>
 
       <div className="navbar-links">
