@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
-
-import db from "@/firebase";
-
 import { User, Play, Check } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
+import axios from "axios";
 
 const mockBio = "I like EDM and pop music!";
 
@@ -36,36 +33,23 @@ const UserProfilePage = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  // ---------------- FETCH USER ----------------
+  // fetch specific user
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const ref = doc(db, "users", id);
-        const snap = await getDoc(ref);
+        setLoading(true);
 
-        if (snap.exists()) {
-          const data = snap.data();
+        const response = await axios.get(`http://localhost:3000/users/${id}`);
 
-          setUser({
-            id: id,
-            displayName: data.displayName,
-            profileImage: data.profileImage,
-          });
-        } else {
-          setUser({
-            id: "User not found",
-            displayName: "User not found",
-            profileImage: "",
-          });
-        }
+        setUser(response.data);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching user:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    if (id) fetchUser();
   }, [id]);
 
   if (loading) {
@@ -84,7 +68,7 @@ const UserProfilePage = () => {
         <section className="flex flex-col items-center">
 
           <Avatar className="h-30 w-30 border border-[#202124] bg-[#D9D9D9]">
-            <AvatarImage src={user?.profileImage} />
+            <AvatarImage src={user.images?.[0]?.url} alt={user.display_name} />
             <AvatarFallback className="bg-[#D9D9D9]">
               <User className="h-16 w-16 text-[#202124]" strokeWidth={2.5} />
             </AvatarFallback>
@@ -92,7 +76,7 @@ const UserProfilePage = () => {
 
           <div className="mt-4 w-full max-w-65">
             <h1 className="text-2xl font-semibold text-[#0F1F2F]">
-              {user?.displayName}
+              {user?.display_name}
             </h1>
             <p className="mt-1 text-xs text-[#5F6368]">@{user.id}</p>
 
@@ -106,13 +90,13 @@ const UserProfilePage = () => {
             />
           </div>
 
-<div className="mt-4 flex">
-  <Link to="/inbox" className="flex-1">
-    <Button className="w-full bg-[#4B8DB3] text-xs text-white hover:bg-[#4B8DB3]/90 cursor-pointer">
-      Message
-    </Button>
-  </Link>
-</div>
+          <div className="mt-4 flex">
+            <Link to="/inbox" className="flex-1">
+              <Button className="w-full bg-[#4B8DB3] text-xs text-white hover:bg-[#4B8DB3]/90 cursor-pointer">
+                Message
+              </Button>
+            </Link>
+          </div>
         </section>
 
         {/* RIGHT (MOCK ONLY) */}

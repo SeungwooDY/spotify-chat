@@ -1,11 +1,8 @@
 import { Search, X, User } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import db from "../firebase.js";
-
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const ProfileCard = ({ user }) => (
   <Link to={`/user/${user.id}`} className="block">
@@ -22,7 +19,7 @@ const ProfileCard = ({ user }) => (
       {/* Text below, left-aligned */}
       <div className="w-full mt-2 text-left leading-tight">
         <p className="text-sm font-medium truncate">
-          {user.display_name}
+          {user?.display_name}
         </p>
         <p className="text-xs text-muted-foreground">
           profile
@@ -64,18 +61,10 @@ const DiscoverPage = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const snapshot = await getDocs(collection(db, "users"));
-        const firebaseUsers = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            display_name: data.displayName || "Unknown",
-            images: data.profileImage
-              ? [{ url: data.profileImage }]
-              : [],
-          };
-        });
-        setUsers(firebaseUsers);
+
+        const response = await axios.get("http://localhost:3000/users");
+
+        setUsers(response.data);
       } catch (err) {
         console.error("Error fetching users:", err);
       } finally {
