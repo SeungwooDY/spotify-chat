@@ -19,20 +19,16 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <NavLink to="/profile" className="navbar-avatar">
-        {user?.profileImage ? (
-          <img
-            src={user.profileImage}
-            alt={user.displayName}
-            className="h-20 w-20 rounded-full object-cover"
-          />
-        ) : (
-          <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
-            <AvatarFallback className="bg-[#E5E5E5]">
-              <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
-            </AvatarFallback>
-          </Avatar>
-        )}
+      {/* Desktop: profile section */}
+      <NavLink to="/profile" className="navbar-profile-desktop">
+        <Avatar className="h-12 w-12 border-2 border-white/25 bg-[#E5E5E5]">
+          <AvatarImage src={user?.profileImage}
+            alt={user?.displayName} />
+              <AvatarFallback className="bg-[#E5E5E5]">
+                <User className="h-6 w-6 text-[#222222]" strokeWidth={2.5} />
+              </AvatarFallback>
+        </Avatar>
+          <span className="navbar-profile-label">My Profile</span>
       </NavLink>
 
       <div className="navbar-links">

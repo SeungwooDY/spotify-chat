@@ -1,6 +1,8 @@
 import { getTopTracks } from '../../utils/tracks';
 import { useAuth } from '@/context/AuthContext';
 import { useState, useEffect } from 'react';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { User } from "lucide-react";
 
 const TopSongsPage = () => {
   const { user, loading } = useAuth();
@@ -37,11 +39,13 @@ const TopSongsPage = () => {
         {/* Title + profile */}
         <div className="flex flex-col justify-center gap-3">
           <div className="flex items-center gap-3">
-            <img
-              src={user?.profileImage}
-              alt={user?.displayName}
-              className="h-12 w-12 rounded-full object-cover"
-            />
+            <Avatar className="h-12 w-12 border-2 border-white/25 bg-[#E5E5E5]">
+              <AvatarImage src={user?.profileImage}
+                alt={user?.displayName} />
+                  <AvatarFallback className="bg-[#E5E5E5]">
+                    <User className="h-6 w-6 text-[#222222]" strokeWidth={2.5} />
+                  </AvatarFallback>
+            </Avatar>
             <span className="text-lg font-medium">{user?.displayName}</span>
           </div>
           <h1 className="text-4xl font-bold leading-tight md:text-5xl">
