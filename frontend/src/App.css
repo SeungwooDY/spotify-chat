@@ -149,8 +149,7 @@
     }
   }
 
-  /* ── Logo ───────────────────────────────────────────── */
-  .navbar-logo {
+  .navbar-profile-desktop {
     display: none;
   }
 
@@ -217,6 +216,11 @@
   @media (min-width: 768px) {
     .navbar-links {
       flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 0 16px;
+      flex: 1;
       justify-content: flex-start;
       align-items: stretch;
       flex: 1;
