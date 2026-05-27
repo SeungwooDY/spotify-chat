@@ -108,7 +108,9 @@
 }
 
 .post {
-  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
   padding-bottom: 1rem;
   width: 100%;
   border-radius: 1rem;
