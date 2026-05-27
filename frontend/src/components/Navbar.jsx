@@ -21,16 +21,16 @@ const Navbar = () => {
     <nav className="navbar">
       <NavLink to="/profile" className="navbar-avatar">
         <img
-          src={user?.profileImage}
+          src={user ? user.profileImage : 
+            <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
+              <AvatarImage src="" alt="profile" />
+              <AvatarFallback className="bg-[#E5E5E5]">
+                <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
+              </AvatarFallback>
+            </Avatar>}
           alt={user?.displayName}
           className="h-20 w-20 rounded-full object-cover"
         />
-        {/* <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
-          <AvatarImage src="" alt="profile" />
-          <AvatarFallback className="bg-[#E5E5E5]">
-            <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
-          </AvatarFallback>
-        </Avatar> */}
       </NavLink>
 
       <div className="navbar-links">
