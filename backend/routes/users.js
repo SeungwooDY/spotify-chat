@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchAllUsers, fetchUserById } from "../db/users.js";
+import { fetchAllUsers, fetchUserById } from "../utils/users.js";
 
 const router = express.Router();
 
