@@ -17,7 +17,7 @@ function generateRandomString(length) {
 
 router.get('/login', (req, res) => {
   const state = generateRandomString(16);
-  const scope = 'user-read-private user-read-email';
+  const scope = 'user-read-private user-read-email user-top-read';
 
   res.cookie('spotify_auth_state', state, { httpOnly: true });
 
@@ -67,16 +67,21 @@ router.get('/callback', async (req, res) => {
     if (!profileResponse.ok) throw new Error(`Spotify profile error: ${profileResponse.status}`);
     const profile = await profileResponse.json();
 
-    // 3. Add the user to Firestore
+    // 3. Add the user and tokens to Firestore
     await setDoc(doc(db, 'users', profile.id), {
       displayName: profile.display_name,
       email: profile.email,
       profileImage: profile.images?.[0]?.url || null,
       spotifyId: profile.id,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
       lastLogin: new Date().toISOString(),
     }, { merge: true });
 
-    // 4. Redirect to frontend with tokens
+    // 4. Set session cookie so backend knows who's making future requests
+    res.cookie('spotify_user_id', profile.id, { httpOnly: true });
+
+    // 5. Redirect to frontend with tokens
     res.redirect(frontend_uri + '/callback#' +
       querystring.stringify({
         access_token: data.access_token,

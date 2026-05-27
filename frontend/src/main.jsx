@@ -8,6 +8,7 @@ import {
 import App from "./App.jsx";
 
 // pages
+<<<<<<< HEAD
 import LikedSongsPage from "./pages/LikedSongsPage.jsx";
 import DiscoverPage from "./pages/DiscoverPage.jsx";
 import TopArtistsPage from "./pages/TopArtistsPage.jsx";
@@ -20,6 +21,20 @@ import Callback from "./pages/Callback.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import UserProfilePage from "./pages/UserProfilePage.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+=======
+import LikedSongsPage from './pages/LikedSongsPage.jsx';
+import DiscoverPage from './pages/DiscoverPage.jsx';
+import TopArtistsPage from './pages/TopArtistsPage.jsx';
+import ForumPage from './pages/ForumPage.jsx';
+import TopSongsPage from './pages/TopSongsPage.jsx';
+import InboxPage from './pages/InboxPage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
+import Login from './pages/Login.jsx';
+import Callback from './pages/Callback.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import UserProfilePage from './pages/UserProfilePage.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+>>>>>>> main
 
 function requireAuth() {
   if (!sessionStorage.getItem("access_token")) {

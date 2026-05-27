@@ -149,8 +149,12 @@
     }
   }
 
+<<<<<<< HEAD
   /* ── Logo ───────────────────────────────────────────── */
   .navbar-logo {
+=======
+  .navbar-profile-desktop {
+>>>>>>> main
     display: none;
   }
 
@@ -217,6 +221,14 @@
   @media (min-width: 768px) {
     .navbar-links {
       flex-direction: column;
+<<<<<<< HEAD
+=======
+      justify-content: center;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 0 16px;
+      flex: 1;
+>>>>>>> main
       justify-content: flex-start;
       align-items: stretch;
       flex: 1;
@@ -251,9 +263,13 @@
     text-decoration: none;
     color: rgba(246, 244, 235, 0.7);
     font-size: 9px;
+<<<<<<< HEAD
     transition:
       color 150ms,
       background-color 150ms;
+=======
+    transition: color 150ms, background-color 150ms;
+>>>>>>> main
     white-space: nowrap;
   }
 
