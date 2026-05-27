@@ -2,6 +2,7 @@ import "../styling/Forum.css";
 import { useState, useEffect, useContext } from 'react';
 import ForumPost from "../components/ForumPost";
 import CreatePost from "@/components/CreatePost";
+import ForumReply from "@/components/ForumReply";
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { User } from "lucide-react";
@@ -14,9 +15,19 @@ const ForumPage = () => {
   const [allDiscussions, setAllDiscussions] = useState([]);
   const [currentDiscussion, setCurrentDiscussion] = useState(null);
   const [refresh, setRefresh] = useState(false);
-  const [reply, setReply] = useState(false);
+  const [reply, setReply] = useState(null);
+  const [allReplies, setAllReplies] = useState(null);
 
   const discussions = allDiscussions.filter((discussion) => `${discussion.title}`.toLowerCase().includes(searchText.toLowerCase()))
+
+  const handleReply = async (discussion_id, reply) => {
+    try {
+      reply.discussion_id = discussion_id;
+      await axios.post("http://localhost:3000/forum/reply", reply);
+    } catch (error) {
+      console.error(error.response?.data);
+    }
+  }
 
   useEffect(() => {
     const fetchDiscussions = async () => {
@@ -27,6 +38,26 @@ const ForumPage = () => {
 
     fetchDiscussions();
   }, [refresh]);
+
+  useEffect(() => {
+    const fetchReplies = async () => {
+      try {
+        if (currentDiscussion === null) return; // initial page render
+        console.log("fetching replies... ")
+        const { data } = await axios.get('http://localhost:3000/forum/reply', 
+          {params: 
+            {discussion_id: currentDiscussion.id
+            }
+          }
+        );
+        setAllReplies(data);
+
+      } catch (error) {
+        console.error(error.response?.data);
+      }
+    }
+    fetchReplies();
+  }, [currentDiscussion])
 
   return (
     <>
@@ -56,7 +87,7 @@ const ForumPage = () => {
           {discussions.map((item) => (
             <ForumPost 
             onPress={()=>{
-              setCurrentDiscussion({created_at: new Date(item.created_at.seconds * 1000).toLocaleDateString('en-US'), user_id: item.user_id, user_display: item.user_display, message: item.message, title: item.title})
+              setCurrentDiscussion({id: item.id, created_at: new Date(item.created_at.seconds * 1000).toLocaleDateString('en-US'), user_id: item.user_id, user_display: item.user_display, message: item.message, title: item.title})
             }}
             key={item.id} 
             canDelete={user.spotifyId===item.user_id}
@@ -89,21 +120,26 @@ const ForumPage = () => {
             <h1 className="post-title">{currentDiscussion.title}</h1>
             <p>{currentDiscussion.message}</p>
             <MessageSquareQuote 
-            onClick={() => setReply(prevState => !prevState)}
+            onClick={() => setReply({message: "", user_id: user.spotifyId, user_display: user.displayName})}
             className="w-[2rem] h-[2rem] pt-[0.5rem] text-gray-500 cursor-pointer hover:text-black" />
           </header>
           {reply ? 
           <>
+          {/* input message reply */}
           <textarea 
+          value={reply.message}
+          onChange={(e) => setReply({...reply, message: e.target.value})}
           className="border rounded-[0.5rem] border-gray-500 p-[0.5rem]" 
           placeholder="reply..."></textarea>
+
           <div className="flex w-[100%] justify-end">
-            <button onClick={() => setReply(prevState=>!prevState)}
+            <button onClick={() => setReply(null)}
             className="cancel-button"> <Ban /> Cancel</button>
 
-            <button className="create-button"> <SendHorizontal /> Submit</button>
+            <button onClick={() => handleReply(currentDiscussion.id, reply)} className="create-button"> <SendHorizontal /> Submit</button>
           </div>
           </> : null}
+          {allReplies.map((reply) => (<ForumReply message={reply.message} userDisplay={reply.user_display}/>))}
           
           
           
