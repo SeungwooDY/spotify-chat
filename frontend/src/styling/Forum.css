@@ -26,6 +26,26 @@
   }
 }
 
+.icon-button {
+  width: 2rem;
+  height: 2rem;
+  padding-top: 0.5rem;
+  color: gray;
+  cursor: pointer;
+}
+
+.icon-button-small {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding-top: 0.5rem;
+  color: gray;
+  cursor: pointer;
+}
+
+.icon-button:hover, .icon-button-small:hover {
+  color:black;
+}
+
 .error {
   border: 2px solid red !important;
 }

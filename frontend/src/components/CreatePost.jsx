@@ -12,9 +12,6 @@ const CreatePost = ( {closeForm, setRefresh} ) => {
   const [messageErr, setMessageErr] = useState(false);
 
   const handleCreatePost = async () => {
-    console.log(`creating a post! authored by ${user.displayName}`);
-    console.log(`title: ${title}`)
-    console.log(`message: ${message}`)
     if (message === "") {
       setMessageErr(true);
     } else {
@@ -30,7 +27,7 @@ const CreatePost = ( {closeForm, setRefresh} ) => {
     const discussionObject = {user_id: user.spotifyId, user_display: user.displayName, message: message, title: title};
 
     try {
-      const response = await axios.post('http://localhost:3000/forum', discussionObject);
+      await axios.post('http://localhost:3000/forum', discussionObject);
       setRefresh(prevState => !prevState);
       closeForm(prevState => !prevState);
 
