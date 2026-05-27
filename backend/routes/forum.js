@@ -114,7 +114,6 @@ router.delete("/reply", async(req, res) => {
 
 // update an old reply
 router.put("/reply", async(req, res) => {
-  console.log(req.body);
   try {
     await updateReply(req.body);
     res.status(200).json({success: true})

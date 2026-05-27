@@ -1,17 +1,19 @@
 import "../styling/Forum.css";
 import { User } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const ForumPost = ( {postTitle, message, date, username, onPress } ) => {
+const ForumPost = ( {postTitle, message, date, imageUrl, username, onPress } ) => {
   
   return (
     <>
       <div onClick={onPress} className="post">
         <section className="post-header">
-          <div className="flex h-[2rem] w-[2rem] m-[0.5rem] items-center justify-center overflow-hidden rounded-full border border-black bg-[#E5E5E5]">
-            <User
-              className="h-8 w-8 text-[#222222]"
-              strokeWidth={2}/>
-          </div>
+          <Avatar className="size-10">
+            <AvatarImage src={imageUrl} alt="profile photo" />
+            <AvatarFallback className="bg-muted">
+              <User className="size-6 text-muted-foreground" />
+            </AvatarFallback>
+          </Avatar>
           <p>{username}</p>
           <p className="text-gray-600 text-[0.875rem]">{date}</p>
         </section>

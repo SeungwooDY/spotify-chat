@@ -1,11 +1,11 @@
 import "../styling/Forum.css";
 import {X} from "lucide-react"
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 const CreatePost = ( {closeForm, setRefresh} ) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [titleErr, setTitleErr] = useState(false);
@@ -24,7 +24,7 @@ const CreatePost = ( {closeForm, setRefresh} ) => {
     }
     if (message === "" || title === "") return;
 
-    const discussionObject = {user_id: user.spotifyId, user_display: user.displayName, message: message, title: title};
+    const discussionObject = {user_id: user.id, user_display: user.displayName, message: message, title: title};
 
     try {
       await axios.post('http://localhost:3000/forum', discussionObject);

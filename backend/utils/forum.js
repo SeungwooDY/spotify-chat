@@ -28,6 +28,7 @@ const createReply = async (reply) => {
     user_display: reply.user_display,
     message: reply.message,
     created_at: Timestamp.now(),
+    likes: []
   });
   return docRef;
 }
@@ -36,6 +37,7 @@ const updateReply = async (reply) => {
   const firestoreTimestamp = Timestamp.fromDate(new Date(reply.created_at));
   await updateDoc(doc(db, "replies", reply.id), {...reply, created_at_str: deleteField(), 
     created_at: firestoreTimestamp,
+    imageUrl: deleteField(),
     id: deleteField()});
 }
 
@@ -62,6 +64,7 @@ const likeDiscussion = async (discussion) => {
   await updateDoc(docRef, {...discussion, 
     created_at_str: deleteField(), 
     created_at: firestoreTimestamp,
+    imageUrl: deleteField(),
     id: deleteField()}); // should have handled like updates earlier
 }
 
