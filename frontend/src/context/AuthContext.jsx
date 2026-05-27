@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -12,8 +14,9 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         if (token && !user) {
-            fetch('https://api.spotify.com/v1/me', {
-                headers: { 'Authorization': 'Bearer ' + token }
+            fetch(`${API_BASE}/api/me`, {
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${token}` },
             })
                 .then(res => {
                     if (!res.ok) throw new Error('Failed to fetch profile');
