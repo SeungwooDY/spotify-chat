@@ -12,7 +12,9 @@ const port=process.env.PORT || 3001;
 
 app.use(cors());
 app.use(cookieParser());
+app.use(cookieParser());
 app.use(express.json());
+app.use('/', authRouter);
 
 app.use('/', authRouter);
 app.use('/api', spotifyRouter);
