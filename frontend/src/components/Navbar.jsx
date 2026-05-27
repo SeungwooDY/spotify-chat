@@ -1,32 +1,40 @@
 import { NavLink } from "react-router-dom";
-import { User } from "lucide-react";
+import {
+  User, Heart, Mic2, Music, Compass,
+  Mail, MessageCircle, LogOut,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const navLinks = [
-  { to: "/liked-songs", label: "Liked Songs" },
-  { to: "/top-artists", label: "Top Artists" },
-  { to: "/top-songs", label: "Top Songs" },
-  { to: "/", label: "Discover", end: true },
-  { to: "/inbox", label: "Inbox" },
-  { to: "/forum", label: "Forum" },
-  { to: "/login", label: "Logout" },
+const mainLinks = [
+  { to: "/", label: "Discover", icon: Compass, end: true },
+  { to: "/liked-songs", label: "Liked Songs", icon: Heart },
+  { to: "/top-artists", label: "Top Artists", icon: Mic2 },
+  { to: "/top-songs", label: "Top Songs", icon: Music },
+  { to: "/inbox", label: "Inbox", icon: Mail },
+  { to: "/forum", label: "Forum", icon: MessageCircle },
 ];
 
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <NavLink to="/profile" className="navbar-avatar">
-        <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
+      {/* Desktop: logo */}
+      <span className="navbar-logo">Echo</span>
+
+      {/* Desktop: profile section */}
+      <NavLink to="/profile" className="navbar-profile-desktop">
+        <Avatar className="h-12 w-12 border-2 border-white/25 bg-[#E5E5E5]">
           <AvatarImage src="" alt="profile" />
           <AvatarFallback className="bg-[#E5E5E5]">
-            <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
+            <User className="h-6 w-6 text-[#222222]" strokeWidth={2.5} />
           </AvatarFallback>
         </Avatar>
+        <span className="navbar-profile-label">My Profile</span>
       </NavLink>
 
+      {/* Main links + spacer + logout */}
       <div className="navbar-links">
-        {navLinks.map(({ to, label, end }) => (
+        {mainLinks.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
@@ -35,9 +43,26 @@ const Navbar = () => {
               cn("navbar-link", isActive && "navbar-link-active")
             }
           >
-            {label}
+            <Icon className="navbar-link-icon" />
+            <span className="navbar-link-label">{label}</span>
           </NavLink>
         ))}
+
+        {/* Pushes logout to bottom on desktop */}
+        <div className="navbar-spacer" />
+
+        {/* Logout */}
+        <NavLink
+          to="/login"
+          className={({ isActive }) =>
+            cn("navbar-link", "navbar-logout-link", isActive && "navbar-link-active")
+          }
+        >
+          <LogOut className="navbar-link-icon" />
+          <span className="navbar-link-label">Logout</span>
+        </NavLink>
+
+        {/* Mobile: profile avatar */}
         <NavLink to="/profile" className="navbar-profile-mobile">
           <Avatar className="h-9 w-9 border border-black bg-[#E5E5E5]">
             <AvatarImage src="" alt="profile" />
