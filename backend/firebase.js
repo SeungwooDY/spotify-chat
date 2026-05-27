@@ -22,5 +22,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// TODO: also export { doc, setDoc } so auth.js can use them for upserting users
 export default db;

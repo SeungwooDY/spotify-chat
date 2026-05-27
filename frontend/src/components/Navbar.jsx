@@ -20,17 +20,19 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <NavLink to="/profile" className="navbar-avatar">
-        <img
-          src={user ? user.profileImage : 
-            <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
-              <AvatarImage src="" alt="profile" />
-              <AvatarFallback className="bg-[#E5E5E5]">
-                <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
-              </AvatarFallback>
-            </Avatar>}
-          alt={user?.displayName}
-          className="h-20 w-20 rounded-full object-cover"
-        />
+        {user?.profileImage ? (
+          <img
+            src={user.profileImage}
+            alt={user.displayName}
+            className="h-20 w-20 rounded-full object-cover"
+          />
+        ) : (
+          <Avatar className="h-13 w-13 border border-black bg-[#E5E5E5]">
+            <AvatarFallback className="bg-[#E5E5E5]">
+              <User className="h-7 w-7 text-[#222222]" strokeWidth={2.5} />
+            </AvatarFallback>
+          </Avatar>
+        )}
       </NavLink>
 
       <div className="navbar-links">
@@ -48,7 +50,7 @@ const Navbar = () => {
         ))}
         <NavLink to="/profile" className="navbar-profile-mobile">
           <Avatar className="h-9 w-9 border border-black bg-[#E5E5E5]">
-            <AvatarImage src="" alt="profile" />
+            {user?.profileImage && <AvatarImage src={user.profileImage} alt={user.displayName} />}
             <AvatarFallback className="bg-[#E5E5E5]">
               <User className="h-4 w-4 text-[#222222]" strokeWidth={2.5} />
             </AvatarFallback>
