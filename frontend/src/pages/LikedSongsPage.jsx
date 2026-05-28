@@ -73,7 +73,7 @@ const LikedSongsPage = () => {
       </h1>
 
       {/* Main container */}
-      <div className="w-full bg-[#f6f4eb] rounded-2xl shadow-sm border border-black/5 p-5 flex flex-col gap-4 flex-1 min-h-0">
+      <div className="w-full bg-[#f6f4eb] rounded-2xl shadow-sm border border-black/5 py-6 pl-6 pr-2 flex flex-col gap-4 flex-1 min-h-0">
 
         {/* Search */}
         <div className="relative flex items-center w-full">
@@ -115,7 +115,7 @@ const LikedSongsPage = () => {
 
         {/* Song grid */}
         {!loadingTracks && !error && (
-          <div className="overflow-y-auto flex-1 min-h-0">
+          <div className="overflow-y-auto flex-1 min-h-0 pr-4">
             {filteredTracks.length > 0 ? (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-3">
                 {filteredTracks.map(({ track }) => (
