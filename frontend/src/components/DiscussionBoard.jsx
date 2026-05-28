@@ -12,7 +12,6 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
   const [reply, setReply] = useState(null);
   const [allReplies, setAllReplies] = useState(null);
   const [edit, setEdit] = useState(false);
-  const [numReplies, setNumReplies] = useState(0);
 
   const handleLike = async () => {
     // unlike the post
@@ -44,7 +43,6 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
         newReply.discussion_id = discussion_id;
 
         // temp fields for rendering 
-        newReply.id = numReplies;
         const date = new Date();
         const seconds = Math.floor(date.getTime() / 1000);
 
@@ -56,9 +54,9 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
         newReply.likes = [];
         newReply.imageUrl = userData.images?.[0]?.url || null;
         
-        await axios.post("http://localhost:3000/forum/reply", newReply);
+        const {data} = await axios.post("http://localhost:3000/forum/reply", newReply);
+        newReply.id = await data.reply_id;
         setAllReplies([newReply, ...allReplies]);
-        setNumReplies(numReplies+1);
       }
       
       setReply(null); // clear it out
