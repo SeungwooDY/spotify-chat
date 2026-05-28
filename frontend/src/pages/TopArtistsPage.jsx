@@ -9,8 +9,9 @@ const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
 }));
 
 const TopArtistsPage = () => {
-  const { artists: fetchedArtists } = useSpotifyData();
-  const artists = fetchedArtists.length > 0 ? fetchedArtists : DUMMY_ARTISTS;
+  const { artists: allArtists } = useSpotifyData();
+  const currentArtists = allArtists.medium_term;
+  const artists = currentArtists.length > 0 ? currentArtists : DUMMY_ARTISTS;
 
   return (
     <section className="flex min-h-screen flex-col bg-background px-5 pb-24 pt-4 text-foreground transition-colors md:px-6 md:pb-12">
