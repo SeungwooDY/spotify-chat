@@ -106,7 +106,7 @@ const UserProfilePage = () => {
 
           <FeaturedCard title="Featured artists" loading={loading}>
             {user?.featuredArtists?.length ? (
-              <div className="flex flex-wrap justify-center gap-4 lg:justify-between lg:gap-0">
+              <div className="grid grid-cols-4 gap-4">
                 {user.featuredArtists.map((artist) => (
                   <ArtistOption
                     key={artist.id}
@@ -122,7 +122,7 @@ const UserProfilePage = () => {
 
           <FeaturedCard title="Featured songs" loading={loading}>
             {user?.featuredTracks?.length ? (
-              <div className="flex flex-wrap justify-center gap-4 lg:justify-between lg:gap-0">
+              <div className="grid grid-cols-4 gap-4">
                 {user.featuredTracks.map((song) => (
                   <SongOption
                     key={song.id}
