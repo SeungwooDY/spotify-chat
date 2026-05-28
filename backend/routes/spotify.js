@@ -180,3 +180,5 @@ router.get('/liked-songs', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch liked songs' });
   }
 });
+
+export default router;
