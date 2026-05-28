@@ -14,14 +14,15 @@ export async function fetchAllUsers() {
       bio: data.bio || '',
       isPublic: data.isPublic !== false,
     };
-  });
+  })
+  .filter((user) => user.isPublic);
 }
 
 export async function fetchUserById(id) {
   const docRef = doc(db, "users", id);
   const snapshot = await getDoc(docRef);
 
-  if (!snapshot.exists()) return null;
+  if (!snapshot.exists() || snapshot.data().isPublic === false) return null;
 
   const data = snapshot.data();
 
