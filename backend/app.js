@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.js";
 import spotifyRouter from "./routes/spotify.js";
 import usersRouter from "./routes/users.js";
+import forumRouter from './routes/forum.js';
 
 const app = express();
 
@@ -25,7 +26,11 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/", authRouter);
 app.use("/users", usersRouter);
-app.use("/api", spotifyRouter);
+
+// import router modules here
+
+app.use('/api', spotifyRouter);
+app.use('/forum', forumRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

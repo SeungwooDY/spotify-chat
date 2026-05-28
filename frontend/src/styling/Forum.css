@@ -1,16 +1,61 @@
+:root {
+  --dark-blue: #4682A9;
+  --dark-blue-hover:#305c79;
+  --tan: #f6f4eb;
+  --light-blue: #91c8e4;
+  --light-blue-hover: #74a0b6;
+}
+
 .page-content {
-  margin-left: 5rem; /* or the width of the navbar */
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-height: 100vh;
+  position: relative;
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 0.3fr 0.5fr 5fr;
   color: var(--foreground);
 }
 
-.page-title {
-  font-size: 4rem;
-  font-weight: bold;
-  margin: 1rem 0 1rem 0;
+@media (max-width: 768px) {
+  .page-content {
+    grid-template-rows: 0.2fr 0.2fr 5fr;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .page-title {
+    font-size: 3rem;
+  }
+}
+
+.icon-button {
+  width: 2rem;
+  height: 2rem;
+  padding-top: 0.5rem;
+  color: gray;
+  cursor: pointer;
+}
+
+.icon-button-small {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding-top: 0.5rem;
+  color: gray;
+  cursor: pointer;
+}
+
+.icon-button:hover, .icon-button-small:hover {
+  color:black;
+}
+
+.error {
+  border: 2px solid red !important;
+}
+
+.helper-text {
+  font-style: italic;
+  color: red;
+  margin-bottom: 0.875rem;
+  font-size: 0.875rem;
 }
 
 .search-bar {
@@ -29,6 +74,8 @@
 }
 
 .create-button {
+  display: flex;
+  gap: 0.5rem;
   background-color: var(--dark-blue);
   color: white;
   width: fit-content;
@@ -37,6 +84,30 @@
   border-radius: 0.5rem;
   transition-duration: 0.4s;
   margin: 1rem;
+}
+
+@media (max-width: 768px) {
+  .create-button {
+    font-size: 0.875rem;
+  }
+}
+
+
+.cancel-button {
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--light-blue);
+  width: fit-content;
+  height: fit-content;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition-duration: 0.4s;
+  margin: 1rem;
+}
+
+.cancel-button:hover{
+  background-color: var(--light-blue-hover);
+  box-shadow: 0 0.5rem 1rem 0rem rgba(64, 64, 56, 0.5);
 }
 
 .create-button:hover {
@@ -52,31 +123,59 @@
 
 .post-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
   overflow: auto;
   background-color: var(--secondary);
   width: 80vw;
-  height: 70vh;
-  overflow: auto;
+  min-width: 75vw;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
   border-radius: 3rem;
   box-shadow: var(--app-shadow);
   padding: 2rem;
 }
 
+@media (max-width: 900px) {
+  .post-container {
+    width: 75vw;
+  }
+}
+
 .post {
-  height: 20vh;
-  width: 20vw;
-  min-height: 10rem;
-  min-width: 10rem;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding-bottom: 1rem;
+  width: 100%;
+  min-width: 80%;
   border-radius: 1rem;
   background-color: var(--card);
   color: var(--card-foreground);
   border: 1px solid var(--border);
+  box-shadow: 0 0.5rem 1rem 0rem rgba(64, 64, 56, 0.3);
+  overflow: hidden;
+  transition-duration: 0s;
+}
+
+.post:hover {
+  border: 2px solid var(--dark-blue);
+}
+
+.post-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 1.5rem 0 1rem;
 }
 
 .post-header {
-  height: 5vh;
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  gap: 1rem;
+  height: 4rem;
   width: 100%;
   min-height: 3rem;
   border-radius: 1rem 1rem 0 0;
@@ -85,7 +184,13 @@
   display: flex;
   align-items: center; 
   padding-left: 1rem;
+  padding-top: 0.2rem;
   box-sizing: border-box;
+}
+
+.username {
+  font-size: 0.875rem;
+  font-style: italic;
 }
 
 .form-overlay {
@@ -163,4 +268,31 @@
 
 .exit-icon:hover {
   color: var(--foreground);
+}
+
+.exit-arrow {
+  width: 2rem;
+  height: 2rem;
+  color: gray;
+  transition-duration: 0.1s;
+  cursor: pointer;
+}
+
+.exit-arrow:hover {
+  color: black;
+}
+
+.post-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.forum-text {
+  border: solid 1px black;
+  border-radius: 1rem;
 }
