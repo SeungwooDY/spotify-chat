@@ -64,7 +64,13 @@ router.get('/callback', async (req, res) => {
     const profileResponse = await fetch('https://api.spotify.com/v1/me', {
       headers: { 'Authorization': 'Bearer ' + data.access_token }
     });
-    if (!profileResponse.ok) throw new Error(`Spotify profile error: ${profileResponse.status}`);
+    if (!profileResponse.ok) {
+      if (profileResponse.status === 429) {
+        const retryAfter = profileResponse.headers.get('Retry-After');
+        console.error(`Spotify rate limited. Retry after ${retryAfter ?? '?'} seconds`);
+      }
+      throw new Error(`Spotify profile error: ${profileResponse.status}`);
+    }
     const profile = await profileResponse.json();
 
     // 3. Add the user and tokens to Firestore
