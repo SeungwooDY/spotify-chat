@@ -17,7 +17,7 @@ function generateRandomString(length) {
 
 router.get('/login', (req, res) => {
   const state = generateRandomString(16);
-  const scope = 'user-read-private user-read-email user-top-read';
+  const scope = 'user-read-private user-read-email user-top-read user-library-read';
 
   res.cookie('spotify_auth_state', state, { httpOnly: true });
 
