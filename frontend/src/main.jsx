@@ -20,6 +20,7 @@ import Callback from './pages/Callback.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import UserProfilePage from './pages/UserProfilePage.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { SpotifyDataProvider } from './context/SpotifyDataContext.jsx';
 import ThemeProvider from './context/ThemeProvider.jsx';
 
 function requireAuth() {
@@ -88,7 +89,9 @@ createRoot(document.getElementById('root')).render(
     <StrictMode>
       <ThemeProvider>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <SpotifyDataProvider>
+            <RouterProvider router={router} />
+          </SpotifyDataProvider>
         </AuthProvider>
       </ThemeProvider>
     </StrictMode>

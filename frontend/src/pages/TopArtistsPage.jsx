@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
 import { User } from "lucide-react";
-
-const SPOTIFY_TOP_ARTISTS_URL =
-  "https://api.spotify.com/v1/me/top/artists?limit=9&time_range=medium_term";
+import { useSpotifyData } from "@/context/SpotifyDataContext";
 
 const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
   id: `dummy-${index + 1}`,
@@ -11,49 +8,9 @@ const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
   spotifyUrl: null,
 }));
 
-const getSpotifyAccessToken = () => {
-  return localStorage.getItem("spotify_access_token");
-};
-
-const getTopArtists = async (accessToken) => {
-  const response = await fetch(SPOTIFY_TOP_ARTISTS_URL, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Unable to fetch Spotify top artists");
-  }
-
-  const data = await response.json();
-
-  return (data.items ?? []).slice(0, 9).map((artist, index) => ({
-    id: artist.id ?? `spotify-artist-${index + 1}`,
-    name: artist.name ?? `Artist ${index + 1}`,
-    imageUrl: artist.images?.[0]?.url ?? null,
-    spotifyUrl: artist.external_urls?.spotify ?? null,
-  }));
-};
-
 const TopArtistsPage = () => {
-  const [artists, setArtists] = useState(DUMMY_ARTISTS);
-
-  useEffect(() => {
-    const accessToken = getSpotifyAccessToken();
-
-    if (!accessToken) {
-      return;
-    }
-
-    getTopArtists(accessToken)
-      .then((topArtists) => {
-        setArtists(topArtists.length > 0 ? topArtists : DUMMY_ARTISTS);
-      })
-      .catch(() => {
-        setArtists(DUMMY_ARTISTS);
-      });
-  }, []);
+  const { artists: fetchedArtists } = useSpotifyData();
+  const artists = fetchedArtists.length > 0 ? fetchedArtists : DUMMY_ARTISTS;
 
   return (
     <section className="flex min-h-screen flex-col bg-background px-5 pb-24 pt-4 text-foreground transition-colors md:px-6 md:pb-12">

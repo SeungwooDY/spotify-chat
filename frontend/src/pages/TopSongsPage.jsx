@@ -1,22 +1,13 @@
-import { getTopTracks } from '../../utils/tracks';
 import { useAuth } from '@/context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useSpotifyData } from '@/context/SpotifyDataContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 
 const TopSongsPage = () => {
-  const { user, loading } = useAuth();
-  const [tracks, setTracks] = useState([]);
-  const [fetchingTracks, setFetchingTracks] = useState(true);
+  const { user, loading: authLoading } = useAuth();
+  const { tracks, loading: dataLoading } = useSpotifyData();
 
-  useEffect(() => {
-    getTopTracks('short_term', 10)
-      .then(data => setTracks(data.items ?? []))
-      .catch(err => console.error(err))
-      .finally(() => setFetchingTracks(false));
-  }, []);
-
-  if (loading || fetchingTracks) return null;
+  if (authLoading || dataLoading) return null;
 
   const topFour = tracks.slice(0, 4);
 
