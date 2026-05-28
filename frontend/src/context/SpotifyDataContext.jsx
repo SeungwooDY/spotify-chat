@@ -14,7 +14,10 @@ export function SpotifyDataProvider({ children }) {
     const hasFetched = useRef(false);
 
     const fetchByRange = (endpoint, timeRange) =>
-        fetch(`${API_BASE}/${endpoint}?time_range=${timeRange}&limit=10`, { credentials: 'include' })
+        fetch(`${API_BASE}/${endpoint}?time_range=${timeRange}&limit=10`, {
+            credentials: 'include',
+            headers: { Authorization: `Bearer ${token}` },
+        })
             .then(res => {
                 if (!res.ok) throw new Error(`Failed to fetch ${timeRange} ${endpoint}`);
                 return res.json();
