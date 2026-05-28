@@ -155,4 +155,27 @@ router.put("/profile", async (req, res) => {
   }
 });
 
+// GET /api/liked-songs
+router.get('/liked-songs', async (req, res) => {
+  const accessToken = await getUserToken(req);
+  if (!accessToken) return res.status(401).json({ error: 'Not authenticated' });
+
+  try {
+    const { offset = 0, limit = 50 } = req.query;
+
+    const response = await fetch(
+      `https://api.spotify.com/v1/me/tracks?offset=${offset}&limit=${limit}`, {
+        headers: { 'Authorization': 'Bearer ' + accessToken }
+      }
+    );
+
+    if (!response.ok) throw new Error(`Spotify error: ${response.status}`);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch top tracks' });
+  }
+});
+
 export default router;
