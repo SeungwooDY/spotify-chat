@@ -83,7 +83,7 @@ const UserProfilePage = () => {
             </label>
 
             <Textarea
-              value={bio}
+              value={user.bio}
               onChange={(e) => setBio(e.target.value)}
               className="mt-2 h-24 resize-none border-none bg-card text-sm text-card-foreground shadow-none focus-visible:ring-0"
             />
@@ -106,10 +106,11 @@ const UserProfilePage = () => {
             buttonLabels={["View top artists"]}
           >
             <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4 ">
-              {topArtists.map((artist) => (
+              {user.featured_artists.map((artist) => (
                 <ArtistOption
                   key={artist.id}
                   name={artist.name}
+                  image={artist.imageUrl}
                 />
               ))}
             </div>
@@ -120,10 +121,11 @@ const UserProfilePage = () => {
             buttonLabels={["View top songs", "View liked songs"]}
           >
             <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
-              {topSongs.map((song) => (
+              {user.featured_tracks.map((song) => (
                 <SongOption
                   key={song.id}
                   name={song.name}
+                  image={song.imageUrl}
                 />
               ))}
             </div>
@@ -166,16 +168,21 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
   );
 };
 
-const ArtistOption = ({ name, selected }) => {
+const ArtistOption = ({ name, image, selected }) => {
   return (
-    <button className="flex w-25 flex-col items-center p-2 cursor-pointer hover:bg-muted rounded-xl">
+    <button className="flex w-25 flex-col items-center p-2 hover:bg-muted rounded-xl">
       <div className="relative">
         <div
           className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
             selected ? "ring-4 ring-primary" : ""
           }`}
         >
-          <User className="h-7 w-7 text-foreground" strokeWidth={2.5} />
+          <Avatar className="h-12 w-12 text-foreground">
+            <AvatarImage src={image} alt={name} />
+            <AvatarFallback className="bg-muted">
+              <User className="h-7 w-7 text-foreground" strokeWidth={2.5} />
+            </AvatarFallback>
+          </Avatar>
         </div>
 
         {selected && <SelectionCheck />}
@@ -188,16 +195,21 @@ const ArtistOption = ({ name, selected }) => {
   );
 };
 
-const SongOption = ({ name, selected }) => {
+const SongOption = ({ name, image, selected }) => {
   return (
-    <button className="flex w-25 flex-col items-center p-2 cursor-pointer hover:bg-muted rounded-xl">
+    <button className="flex w-25 flex-col items-center p-2 hover:bg-muted rounded-xl">
       <div className="relative">
         <div
           className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
             selected ? "ring-4 ring-primary" : ""
           }`}
         >
-          <Play className="ml-1 h-7 w-7 text-foreground" strokeWidth={1.75} />
+          <Avatar className="h-12 w-12 text-foreground">
+            <AvatarImage src={image} alt={name} />
+            <AvatarFallback className="bg-muted">
+              <Play className="ml-1 h-7 w-7 text-foreground" strokeWidth={1.75} />
+            </AvatarFallback>
+          </Avatar>
         </div>
 
         {selected && <SelectionCheck />}
