@@ -1,7 +1,9 @@
 import { User } from "lucide-react";
 import { useSpotifyData } from "@/context/SpotifyDataContext";
 
-const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
+const ARTIST_COUNT = 10;
+
+const DUMMY_ARTISTS = Array.from({ length: ARTIST_COUNT }, (_, index) => ({
   id: `dummy-${index + 1}`,
   name: `Artist ${index + 1}`,
   imageUrl: null,
@@ -11,7 +13,9 @@ const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
 const TopArtistsPage = () => {
   const { artists: allArtists } = useSpotifyData();
   const currentArtists = allArtists.medium_term;
-  const artists = currentArtists.length > 0 ? currentArtists : DUMMY_ARTISTS;
+  const artists = currentArtists.length > 0
+    ? currentArtists.slice(0, ARTIST_COUNT)
+    : DUMMY_ARTISTS;
 
   return (
     <section className="flex min-h-screen flex-col bg-background px-5 pb-24 pt-4 text-foreground transition-colors md:px-6 md:pb-12">
@@ -46,7 +50,6 @@ const TopArtistsPage = () => {
 
               <div className="mt-2 ml-10 leading-tight">
                 <p className="text-sm font-medium">{artist.name}</p>
-                <p className="text-xs">artist</p>
               </div>
             </>
           );
