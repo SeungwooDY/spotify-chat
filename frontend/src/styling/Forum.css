@@ -7,18 +7,20 @@
 }
 
 .page-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-height: 100vh;
+  position: relative;
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 0.3fr 0.5fr 5fr;
   color: var(--foreground);
 }
 
-.page-title {
-  font-size: 4rem;
-  font-weight: bold;
-  margin: 1rem 0 1rem 0;
+@media (max-width: 768px) {
+  .page-content {
+    grid-template-rows: 0.2fr 0.2fr 5fr;
+    padding-bottom: 5rem;
+  }
 }
+
 @media (max-width: 767px) {
   .page-title {
     font-size: 3rem;
@@ -84,6 +86,13 @@
   margin: 1rem;
 }
 
+@media (max-width: 768px) {
+  .create-button {
+    font-size: 0.875rem;
+  }
+}
+
+
 .cancel-button {
   display: flex;
   gap: 0.5rem;
@@ -119,11 +128,19 @@
   overflow: auto;
   background-color: var(--secondary);
   width: 80vw;
-  height: 70vh;
-  overflow: auto;
+  min-width: 75vw;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
   border-radius: 3rem;
   box-shadow: var(--app-shadow);
   padding: 2rem;
+}
+
+@media (max-width: 900px) {
+  .post-container {
+    width: 75vw;
+  }
 }
 
 .post {
@@ -132,6 +149,7 @@
   flex-shrink: 0;
   padding-bottom: 1rem;
   width: 100%;
+  min-width: 80%;
   border-radius: 1rem;
   background-color: var(--card);
   color: var(--card-foreground);
