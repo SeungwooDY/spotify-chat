@@ -45,11 +45,19 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
 
         // temp fields for rendering 
         newReply.id = numReplies;
+        const date = new Date();
+        const seconds = Math.floor(date.getTime() / 1000);
+
+        newReply.created_at = {
+          type: 'firestore/timestamp/1.0',
+          seconds: seconds,
+          nanoseconds: 0,
+        };
         newReply.likes = [];
         newReply.imageUrl = userData.images?.[0]?.url || null;
         
         await axios.post("http://localhost:3000/forum/reply", newReply);
-        setAllReplies([...allReplies, newReply]);
+        setAllReplies([newReply, ...allReplies]);
         setNumReplies(numReplies+1);
       }
       
