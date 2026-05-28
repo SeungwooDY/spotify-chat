@@ -1,6 +1,8 @@
 import { Search, X } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const TrackCard = ({ track }) => (
   <div className="flex flex-col bg-white border border-black/5 rounded-xl overflow-hidden">
@@ -29,31 +31,36 @@ const TrackCard = ({ track }) => (
 );
 
 const LikedSongsPage = () => {
+  const { token } = useAuth();
   const [tracks, setTracks] = useState([]);
   const [loadingTracks, setLoadingTracks] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
 
   useEffect(() => {
+    if (!token) return;
+
     const getLikedSongs = async () => {
       try {
         setLoadingTracks(true);
 
-        const response = await axios.get(`http://127.0.0.1:3000/api/liked-songs`, {
-          params: { offset: 0, limit: 50 },
-          withCredentials: true,
+        const res = await fetch(`${API_BASE}/api/liked-songs?offset=0&limit=50`, {
+          credentials: "include",
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        setTracks(response.data.items ?? []);
+        if (!res.ok) throw new Error(`Failed to fetch liked songs: ${res.status}`);
+        const data = await res.json();
+        setTracks(data.items ?? []);
       } catch (err) {
         console.error("Error fetching liked songs:", err);
         setError("Failed to load liked songs");
       } finally {
         setLoadingTracks(false);
       }
-    }
+    };
     getLikedSongs();
-  }, []);
+  }, [token]);
 
   const filteredTracks = tracks.filter(({ track }) => {
     const t = query.toLowerCase();
