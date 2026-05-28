@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import { createDiscussion, updateReply, fetchAllDiscussions, createReply, getReplies, deleteDiscussion, likeDiscussion, deleteReply } from "../utils/forum.js";
+import { createDiscussion, updateReply, fetchAllDiscussions, createReply, getReplies, deleteDiscussion, updateDiscussion, deleteReply } from "../utils/forum.js";
 
 const router = express.Router();
 
@@ -52,14 +52,14 @@ router.delete("/", async(req, res) => {
   }
 })
 
-// update the likes of a discussion post
-router.put("/likes", async(req, res) => {
+// update a discussion post
+router.put("/", async(req, res) => {
   try {
-    await likeDiscussion(req.body);
+    await updateDiscussion(req.body);
     res.status(200).json({success: true})
   } catch (error) {
-    console.error("backend error in updating discussion likes: ", error);
-    res.status(500).json({message: 'error in updating forum discussion likes', error: error.message});
+    console.error("backend error in updating discussion message: ", error);
+    res.status(500).json({message: 'error in updating forum discussion discussion', error: error.message});
   }
 })
 

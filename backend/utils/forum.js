@@ -57,15 +57,15 @@ const deleteReply = async (reply_id) => {
   await deleteDoc(replyRef);
 }
 
-// add a like to a discussion post
-const likeDiscussion = async (discussion) => {
+// update a discussion post
+const updateDiscussion = async (discussion) => {
   const docRef = doc(db, "forum", discussion.id);
   const firestoreTimestamp = Timestamp.fromDate(new Date(discussion.created_at));
   await updateDoc(docRef, {...discussion, 
     created_at_str: deleteField(), 
     created_at: firestoreTimestamp,
     imageUrl: deleteField(),
-    id: deleteField()}); // should have handled like updates earlier
+    id: deleteField()}); // should have handled any updates earlier
 }
 
 // delete a discussion board
@@ -95,6 +95,6 @@ export {createDiscussion,
   createReply, 
   getReplies, 
   deleteDiscussion,
-  likeDiscussion,
+  updateDiscussion,
   deleteReply,
   updateReply};

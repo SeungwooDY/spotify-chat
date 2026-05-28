@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import { User } from "lucide-react";
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import {ArrowLeft, Heart, Ban, Trash, SendHorizontal, MessageSquareQuote} from 'lucide-react';
+import {ArrowLeft, Heart, Ban, SquarePen, Trash, SendHorizontal, MessageSquareQuote} from 'lucide-react';
 import axios from 'axios';
 import ForumReply from './ForumReply';
 
 
-const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscussion} ) => {
+const DiscussionBoard = ( {handleEdit, userData, handleDelete, discussionData, updateDiscussion} ) => {
   const { user } = useAuth();
   const [reply, setReply] = useState(null);
   const [allReplies, setAllReplies] = useState(null);
   const [edit, setEdit] = useState(false);
+  const [editPost, setEditPost] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState(discussionData.message);
 
   const handleLike = async () => {
     // unlike the post
@@ -24,7 +26,7 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
     }
     updateDiscussion({...discussionData, likes: updatedLikes})
     try {
-      await axios.put("http://localhost:3000/forum/likes", {...discussionData, likes: updatedLikes});
+      await axios.put("http://localhost:3000/forum", {...discussionData, likes: updatedLikes});
     } catch (error) {
       console.error(error.response?.data);
     }
@@ -116,7 +118,12 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
       {/* open specific post */}
       <section className="post-container"> 
         <header className="flex-col border-b relative border-gray-400 pb-[1rem] w-[100%] h-[fit-content]">
-          {user.id === discussionData.user_id ? <Trash onClick={() => handleDelete(discussionData.id)} className="exit-icon"/> : null}
+          {user.id === discussionData.user_id ? 
+          <div className="flex justify-end gap-[1rem]">
+            <SquarePen onClick={() => setEditPost(prevState=>!prevState)} className="icon-button"/>
+            <Trash onClick={() => handleDelete(discussionData.id)} className="icon-button"/>
+          </div> : null }
+          
           <div className="flex items-center gap-[1rem]">
             <ArrowLeft 
             className="exit-arrow"
@@ -138,13 +145,32 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
           </div>
           
           <h1 className="post-title">{discussionData.title}</h1>
-          <p>{discussionData.message}</p>
-          <div className="flex gap-[1rem] items-center">
-            <p className="pt-[0.5rem] text-gray-500">{allReplies? allReplies.length : "0"}</p>
-            <MessageSquareQuote 
-            onClick={() => setReply({message: "", user_id: user.id, user_display: user.displayName})}
-            className="w-[2rem] h-[2rem] pt-[0.5rem] text-gray-500 cursor-pointer hover:text-black" />
-            <p className="pt-[0.5rem] text-gray-500">
+          
+          {/* edit a discussion message or display current message*/}
+          {editPost ?
+          <>
+            {/* input message reply */}
+            <textarea 
+            value={currentMessage}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            className="border rounded-[0.5rem] border-gray-500 p-[0.5rem] mt-[0.5rem] min-h-[3rem]" 
+            placeholder="reply..."></textarea>
+
+            <div className="flex w-[100%] justify-end">
+              <button onClick={() => setEditPost(prevState=>!prevState)}
+              className="cancel-button"> <Ban /> Cancel</button>
+
+              <button onClick={() => {setEditPost(prevState=>!prevState); handleEdit({...discussionData, message: currentMessage})}} className="create-button"> <SendHorizontal /> Update </button>
+            </div>
+          </> 
+        : <p>{discussionData.message}</p>}
+
+        <div className="flex gap-[1rem] items-center">
+          <p className="pt-[0.5rem] text-gray-500">{allReplies? allReplies.length : "0"}</p>
+          <MessageSquareQuote 
+          onClick={() => setReply({message: "", user_id: user.id, user_display: user.displayName})}
+          className="w-[2rem] h-[2rem] pt-[0.5rem] text-gray-500 cursor-pointer hover:text-black" />
+          <p className="pt-[0.5rem] text-gray-500">
             {discussionData?.likes?.length || 0}
           </p>
           <Heart 
@@ -152,7 +178,7 @@ const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscuss
             onClick={() => handleLike()} 
             className="icon-button" 
           />
-          </div>
+        </div>
           
         </header>
 

@@ -29,6 +29,16 @@ const ForumPage = () => {
     }
   }
 
+  const handleEdit = async (discussion) => {
+    try {
+      await axios.put("http://localhost:3000/forum", discussion);
+      setCurrentDiscussion({...currentDiscussion, message: discussion.message})
+      setAllDiscussions(allDiscussions => allDiscussions.map(post => post.id === discussion.id ? {...post, ...discussion, created_at: post.created_at} : post))
+    } catch (error) {
+      console.error(error.response?.data);
+    }
+  }
+
   // fetch user data from the database
   useEffect(() => {
     const fetchCurrentUser = async() => {
@@ -108,7 +118,7 @@ const ForumPage = () => {
         </section> : null }
 
         {/* open specific post */}
-        {currentDiscussion ?  <DiscussionBoard userData={userData} handleDelete={handleDelete} discussionData={currentDiscussion} updateDiscussion={setCurrentDiscussion}/> : null}
+        {currentDiscussion ?  <DiscussionBoard handleEdit={handleEdit} userData={userData} handleDelete={handleDelete} discussionData={currentDiscussion} updateDiscussion={setCurrentDiscussion}/> : null}
 
         {/* view create post form */}
         {openForm ? <CreatePost closeForm={setOpenForm} setRefresh={setRefresh}/> : null}
