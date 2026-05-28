@@ -2,7 +2,9 @@ import { Search, X, User } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const ProfileCard = ({ user }) => (
   <Link to={`/user/${user.id}`} className="block">
@@ -47,6 +49,7 @@ const ProfileSection = ({ label, profiles, query }) => {
 };
 
 const DiscoverPage = () => {
+  const { user, token } = useAuth();
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,10 +58,13 @@ const DiscoverPage = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-
-        const response = await axios.get("http://127.0.0.1:3000/users");
-
-        setUsers(response.data);
+        const res = await fetch(`${API_BASE}/users`, {
+          credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error(`Failed to fetch users: ${res.status}`);
+        const data = await res.json();
+        setUsers(data.filter(u => u.id !== user?.id));
       } catch (err) {
         console.error("Error fetching users:", err);
       } finally {
@@ -67,7 +73,7 @@ const DiscoverPage = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [token, user]);
 
   const friends = users;
   const suggested = users;
