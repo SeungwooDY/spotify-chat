@@ -12,6 +12,7 @@
   height: 100vh;
   grid-template-rows: 0.3fr 0.5fr 5fr;
   color: var(--foreground);
+  padding: 2rem;
 }
 
 @media (max-width: 768px) {
