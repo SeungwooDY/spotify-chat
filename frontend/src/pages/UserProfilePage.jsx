@@ -1,27 +1,36 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { User, Play } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const UserProfilePage = () => {
   const { id } = useParams();
+  const { token } = useAuth();
 
   const [user, setUser] = useState(null);
   const [bio, setBio] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://127.0.0.1:3000/users/${id}`);
-        setUser(response.data);
-        setBio(response.data.bio ?? "");
+        const res = await fetch(`${API_BASE}/users/${id}`, {
+          credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
+        const data = await res.json();
+        setUser(data);
+        setBio(data.bio ?? "");
       } catch (err) {
         console.error("Error fetching user:", err);
       } finally {
@@ -29,8 +38,8 @@ const UserProfilePage = () => {
       }
     };
 
-    if (id) fetchUser();
-  }, [id]);
+    fetchUser();
+  }, [id, token]);
 
   return (
     <div className="min-h-screen bg-secondary px-6 pt-8 pb-28 text-foreground transition-colors md:px-12 lg:px-16 lg:py-12">
@@ -96,9 +105,9 @@ const UserProfilePage = () => {
         <section className="mx-auto flex w-full max-w-155 flex-col gap-5 lg:mx-0">
 
           <FeaturedCard title="Featured artists" loading={loading}>
-            {user?.featured_artists?.length ? (
+            {user?.featuredArtists?.length ? (
               <div className="flex flex-wrap justify-center gap-4 lg:justify-between lg:gap-0">
-                {user.featured_artists.map((artist) => (
+                {user.featuredArtists.map((artist) => (
                   <ArtistOption
                     key={artist.id}
                     name={artist.name}
@@ -112,9 +121,9 @@ const UserProfilePage = () => {
           </FeaturedCard>
 
           <FeaturedCard title="Featured songs" loading={loading}>
-            {user?.featured_tracks?.length ? (
+            {user?.featuredTracks?.length ? (
               <div className="flex flex-wrap justify-center gap-4 lg:justify-between lg:gap-0">
-                {user.featured_tracks.map((song) => (
+                {user.featuredTracks.map((song) => (
                   <SongOption
                     key={song.id}
                     name={song.name}
