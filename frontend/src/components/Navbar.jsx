@@ -6,6 +6,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/context/AuthContext";
+import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle";
 
 const mainLinks = [
   { to: "/", label: "Discover", icon: Compass, end: true },
@@ -23,11 +24,11 @@ const Navbar = () => {
     <nav className="navbar">
       {/* Desktop: profile section */}
       <NavLink to="/profile" className="navbar-profile-desktop">
-        <Avatar className="h-12 w-12 border-2 border-white/25 bg-[#E5E5E5]">
+        <Avatar className="h-12 w-12 border-2 border-sidebar-border bg-muted">
           <AvatarImage src={user?.profileImage}
             alt={user?.displayName} />
-              <AvatarFallback className="bg-[#E5E5E5]">
-                <User className="h-6 w-6 text-[#222222]" strokeWidth={2.5} />
+              <AvatarFallback className="bg-muted">
+                <User className="h-6 w-6 text-foreground" strokeWidth={2.5} />
               </AvatarFallback>
         </Avatar>
           <span className="navbar-profile-label">My Profile</span>
@@ -52,6 +53,12 @@ const Navbar = () => {
         {/* Pushes logout to bottom on desktop */}
         <div className="navbar-spacer" />
 
+        <HorizontalThemeWipeToggle
+          className="navbar-link navbar-theme-toggle"
+          direction="left"
+          showLabel
+        />
+
         {/* Logout */}
         <NavLink
           to="/login"
@@ -65,10 +72,10 @@ const Navbar = () => {
 
         {/* Mobile: profile avatar */}
         <NavLink to="/profile" className="navbar-profile-mobile">
-          <Avatar className="h-9 w-9 border border-black bg-[#E5E5E5]">
+          <Avatar className="h-9 w-9 border border-sidebar-border bg-muted">
             {user?.profileImage && <AvatarImage src={user.profileImage} alt={user.displayName} />}
-            <AvatarFallback className="bg-[#E5E5E5]">
-              <User className="h-4 w-4 text-[#222222]" strokeWidth={2.5} />
+            <AvatarFallback className="bg-muted">
+              <User className="h-4 w-4 text-foreground" strokeWidth={2.5} />
             </AvatarFallback>
           </Avatar>
         </NavLink>

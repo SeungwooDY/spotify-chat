@@ -9,7 +9,7 @@ import usersRouter from './routes/users.js';
 const app=express();
 
 // Specify a port number for the server
-const port=process.env.PORT || 3001;
+const port=process.env.PORT || 3000;
 
 app.use(cors({
   origin: process.env.FRONTEND_URI || 'http://127.0.0.1:5173',

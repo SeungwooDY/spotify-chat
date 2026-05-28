@@ -62,7 +62,7 @@ const DiscoverPage = () => {
       try {
         setLoading(true);
 
-        const response = await axios.get("http://localhost:3000/users");
+        const response = await axios.get("http://127.0.0.1:3000/users");
 
         setUsers(response.data);
       } catch (err) {
