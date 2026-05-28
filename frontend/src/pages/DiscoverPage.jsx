@@ -7,7 +7,6 @@ import axios from "axios";
 const ProfileCard = ({ user }) => (
   <Link to={`/user/${user.id}`} className="block">
     <div className="flex flex-col items-center p-4 rounded-xl transition-colors hover:bg-muted">
-
       {/* Avatar centered */}
       <Avatar className="size-20">
         <AvatarImage src={user.images?.[0]?.url} alt={user.display_name} />
@@ -18,21 +17,16 @@ const ProfileCard = ({ user }) => (
 
       {/* Text below, left-aligned */}
       <div className="w-full mt-2 text-left leading-tight">
-        <p className="text-sm font-medium truncate">
-          {user?.display_name}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          profile
-        </p>
+        <p className="text-sm font-medium truncate">{user?.display_name}</p>
+        <p className="text-xs text-muted-foreground">profile</p>
       </div>
-
     </div>
   </Link>
 );
 
 const ProfileSection = ({ label, profiles, query }) => {
   const filtered = profiles.filter((p) =>
-    p.display_name.toLowerCase().includes(query.toLowerCase())
+    p.display_name.toLowerCase().includes(query.toLowerCase()),
   );
 
   if (filtered.length === 0) return null;
@@ -83,16 +77,16 @@ const DiscoverPage = () => {
     query &&
     [...friends, ...suggested, ...similar].every(
       (p) =>
-        !(p.display_name || "")
-          .toLowerCase()
-          .includes(query.toLowerCase())
+        !(p.display_name || "").toLowerCase().includes(query.toLowerCase()),
     );
 
   return (
     <div className="p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-8 gap-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-none">Discover</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-none">
+          Discover
+        </h1>
 
         {/* Search bar */}
         <div className="relative flex items-center max-w-xs w-full">
@@ -145,7 +139,9 @@ const DiscoverPage = () => {
 
       {/* Empty state */}
       {noResults && (
-        <p className="text-sm text-muted-foreground mt-4">No profiles found for "{query}"</p>
+        <p className="text-sm text-muted-foreground mt-4">
+          No profiles found for "{query}"
+        </p>
       )}
     </div>
   );

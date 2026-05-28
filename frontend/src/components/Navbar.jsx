@@ -1,7 +1,13 @@
 import { NavLink } from "react-router-dom";
 import {
-  User, Heart, Mic2, Music, Compass,
-  Mail, MessageCircle, LogOut,
+  User,
+  Heart,
+  Mic2,
+  Music,
+  Compass,
+  Mail,
+  MessageCircle,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -31,7 +37,7 @@ const Navbar = () => {
                 <User className="h-6 w-6 text-foreground" strokeWidth={2.5} />
               </AvatarFallback>
         </Avatar>
-          <span className="navbar-profile-label">My Profile</span>
+        <span className="navbar-profile-label">My Profile</span>
       </NavLink>
 
       {/* Main links + spacer + logout */}
@@ -63,7 +69,11 @@ const Navbar = () => {
         <NavLink
           to="/login"
           className={({ isActive }) =>
-            cn("navbar-link", "navbar-logout-link", isActive && "navbar-link-active")
+            cn(
+              "navbar-link",
+              "navbar-logout-link",
+              isActive && "navbar-link-active",
+            )
           }
         >
           <LogOut className="navbar-link-icon" />

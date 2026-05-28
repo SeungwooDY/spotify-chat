@@ -11,6 +11,8 @@ export async function fetchAllUsers() {
       id: doc.id,
       display_name: data.displayName || "Unknown",
       images: data.profileImage ? [{ url: data.profileImage }] : [],
+      bio: data.bio || '',
+      isPublic: data.isPublic !== false,
     };
   });
 }
@@ -27,5 +29,9 @@ export async function fetchUserById(id) {
     id: snapshot.id,
     display_name: data.displayName || "Unknown",
     images: data.profileImage ? [{ url: data.profileImage }] : [],
+    bio: data.bio || '',
+    isPublic: data.isPublic !== false,
+    featuredArtists: data.featuredArtists || [],
+    featuredTracks: data.featuredTracks || [],
   };
 }

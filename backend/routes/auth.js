@@ -3,7 +3,7 @@ import express from 'express';
 import querystring from 'querystring';
 import crypto from 'crypto';
 import db from '../firebase.js';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 const router = express.Router();
 const client_id = process.env.SPOTIFY_CLIENT_ID;
@@ -95,6 +95,7 @@ router.get('/callback', async (req, res) => {
 
 router.get('/refresh_token', async (req, res) => {
   const refresh_token = req.query.refresh_token;
+  const userId = req.cookies?.spotify_user_id;
 
   try {
     const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -111,6 +112,12 @@ router.get('/refresh_token', async (req, res) => {
 
     if (!response.ok) throw new Error(`Refresh failed: ${response.status}`);
     const data = await response.json();
+
+    // Keep Firestore in sync so the token-based lookup stays valid
+    if (userId) {
+      await updateDoc(doc(db, 'users', userId), { accessToken: data.access_token });
+    }
+
     res.json(data);
   } catch (err) {
     console.error(err);
