@@ -4,9 +4,9 @@ import Navbar from "../src/components/Navbar.jsx";
 
 function App() {
   return (
-    <div className="min-h-screen pb-16 md:pb-0 md:pl-[140px]">
+    <div className="min-h-screen bg-background text-foreground pb-16 transition-colors md:pb-0 md:pl-[140px]">
       <Navbar />
-      <main>
+      <main className="min-h-screen bg-background text-foreground transition-colors">
         <Outlet />
       </main>
     </div>

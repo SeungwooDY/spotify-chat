@@ -56,7 +56,7 @@ const TopArtistsPage = () => {
   }, []);
 
   return (
-    <section className="flex min-h-screen flex-col bg-white px-5 pb-24 pt-4 text-black md:px-6 md:pb-12">
+    <section className="flex min-h-screen flex-col bg-background px-5 pb-24 pt-4 text-foreground transition-colors md:px-6 md:pb-12">
       <h1 className="mb-6 text-5xl font-bold leading-none md:text-[46px]">
         Top Artists
       </h1>
@@ -70,7 +70,7 @@ const TopArtistsPage = () => {
                   {index + 1}
                 </span>
 
-                <div className="flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full border border-black bg-[#E5E5E5]">
+                <div className="flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full border border-border bg-muted">
                   {artist.imageUrl ? (
                     <img
                       src={artist.imageUrl}
@@ -79,7 +79,7 @@ const TopArtistsPage = () => {
                     />
                   ) : (
                     <User
-                      className="h-10 w-10 text-[#222222]"
+                      className="h-10 w-10 text-foreground"
                       strokeWidth={2.5}
                     />
                   )}
@@ -99,7 +99,7 @@ const TopArtistsPage = () => {
               href={artist.spotifyUrl}
               target="_blank"
               rel="noreferrer"
-              className="block w-fit text-black no-underline"
+              className="block w-fit text-foreground no-underline"
             >
               {artistContent}
             </a>

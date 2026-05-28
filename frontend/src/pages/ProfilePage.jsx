@@ -223,7 +223,7 @@ const ProfilePage = () => {
   if (error) return <p className="p-8 text-sm text-red-500">Error: {error}</p>;
 
   return (
-    <div className="min-h-screen bg-[#F4F2EA] px-6 pt-8 pb-28 md:px-12 lg:px-16 lg:py-12">
+    <div className="min-h-screen bg-secondary px-6 pt-8 pb-28 text-foreground transition-colors md:px-12 lg:px-16 lg:py-12">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.25fr] lg:gap-16">
         <section className="flex flex-col items-center">
           <input
@@ -256,7 +256,7 @@ const ProfilePage = () => {
             </h1>
             <p className="mt-1 text-xs text-[#5F6368]">@{profile?.id}</p>
 
-            <label className="mt-6 block text-sm font-medium text-[#0F1F2F]">
+            <label className="mt-6 block text-sm font-medium text-foreground">
               Bio
             </label>
 
@@ -267,9 +267,9 @@ const ProfilePage = () => {
               className="mt-2 h-24 resize-none border-none bg-white text-sm text-[#0F1F2F] shadow-none focus-visible:ring-0"
             />
 
-            <div className="mt-6 flex items-center justify-between rounded-lg bg-white px-4 py-3">
+            <div className="mt-6 flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
               <div>
-                <p className="text-sm font-medium text-[#0F1F2F]">
+                <p className="text-sm font-medium text-card-foreground">
                   Public Profile
                 </p>
                 <p className="text-xs text-[#5F6368]">
@@ -360,10 +360,10 @@ const FeaturedCard = ({ title, subtitle, buttons, children }) => {
       <CardContent className="p-5">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold leading-none text-[#0F1F2F]">
+            <h2 className="text-2xl font-semibold leading-none text-card-foreground">
               {title}
             </h2>
-            <p className="mt-2 text-sm text-[#5F6368]">{subtitle}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
           </div>
 
           <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
@@ -444,8 +444,8 @@ const SongOption = ({ name, imageUrl, selected, onToggle }) => {
 
 const SelectionCheck = () => {
   return (
-    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#4B8DB3]">
-      <Check className="h-3 w-3 text-white" strokeWidth={3} />
+    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+      <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
     </div>
   );
 };

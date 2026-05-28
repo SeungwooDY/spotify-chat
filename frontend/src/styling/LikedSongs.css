@@ -1,14 +1,10 @@
-:root {
-  --dark-blue: #4682A9;
-  --tan: #f6f4eb;
-  --light-blue: #91c8e4
-}
-
 .page-content {
   margin-left: 5rem; /* or the width of the navbar */
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-height: 100vh;
+  color: var(--foreground);
 }
 
 .page-title {
@@ -17,12 +13,12 @@
 }
 
 .song-container {
-  background-color: var(--tan);
+  background-color: var(--secondary);
   width: 80vw;
   height: 80vh;
   overflow: auto;
   border-radius: 3rem;
-  box-shadow: 0 1rem 3rem 0rem rgba(64, 64, 56, 0.5);
+  box-shadow: var(--app-shadow);
   margin-top: 1rem;
   padding: 1rem 0 0.5rem 0;
 }
@@ -38,7 +34,8 @@
   align-items: center;
   justify-content: start;
   gap: 1rem;
-  background-color: var(--light-blue);
+  background-color: var(--accent);
+  color: var(--accent-foreground);
   height: 18vh;
   min-height: 8rem;
   border-radius: 1rem;
@@ -49,5 +46,7 @@
   width: 10vh;
   height: 10vh;
   border-radius: 1rem;
-  background-color: var(--tan);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
 }

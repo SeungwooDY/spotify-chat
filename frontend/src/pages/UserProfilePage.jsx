@@ -5,7 +5,6 @@ import { User, Play, Check } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import axios from "axios";
 
@@ -30,7 +29,6 @@ const UserProfilePage = () => {
 
   const [user, setUser] = useState(null);
   const [bio, setBio] = useState(mockBio);
-  const [isPublic, setIsPublic] = useState(true);
   const [loading, setLoading] = useState(true);
 
   // fetch specific user
@@ -39,7 +37,7 @@ const UserProfilePage = () => {
       try {
         setLoading(true);
 
-        const response = await axios.get(`http://localhost:3000/users/${id}`);
+        const response = await axios.get(`http://127.0.0.1:3000/users/${id}`);
 
         setUser(response.data);
       } catch (err) {
@@ -61,38 +59,39 @@ const UserProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F2EA] px-6 pt-8 pb-28 md:px-12 lg:px-16 lg:py-12">
+    <div className="min-h-screen bg-secondary px-6 pt-8 pb-28 text-foreground transition-colors md:px-12 lg:px-16 lg:py-12">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.25fr] lg:gap-16">
 
         {/* LEFT */}
         <section className="flex flex-col items-center">
 
-          <Avatar className="h-30 w-30 border border-[#202124] bg-[#D9D9D9]">
+          <Avatar className="h-30 w-30 border border-border bg-muted">
             <AvatarImage src={user.images?.[0]?.url} alt={user.display_name} />
-            <AvatarFallback className="bg-[#D9D9D9]">
-              <User className="h-16 w-16 text-[#202124]" strokeWidth={2.5} />
+            <AvatarFallback className="bg-muted">
+              <User className="h-16 w-16 text-foreground" strokeWidth={2.5} />
             </AvatarFallback>
           </Avatar>
 
           <div className="mt-4 w-full max-w-65">
-            <h1 className="text-2xl font-semibold text-[#0F1F2F]">
+            <h1 className="text-2xl font-semibold text-foreground">
               {user?.display_name}
             </h1>
-            <p className="mt-1 text-xs text-[#5F6368]">@{user.id}</p>
+            <p className="mt-1 text-xs text-muted-foreground">@{user.id}</p>
 
-            <label className="mt-6 block text-sm font-medium text-[#0F1F2F]">
+            <label className="mt-6 block text-sm font-medium text-foreground">
               Bio
             </label>
 
             <Textarea
               value={bio}
-              className="mt-2 h-24 resize-none border-none bg-white text-sm text-[#0F1F2F] shadow-none focus-visible:ring-0"
+              onChange={(e) => setBio(e.target.value)}
+              className="mt-2 h-24 resize-none border-none bg-card text-sm text-card-foreground shadow-none focus-visible:ring-0"
             />
           </div>
 
           <div className="mt-4 flex">
             <Link to="/inbox" className="flex-1">
-              <Button className="w-full bg-[#4B8DB3] text-xs text-white hover:bg-[#4B8DB3]/90 cursor-pointer">
+              <Button className="w-full cursor-pointer bg-primary text-xs text-primary-foreground hover:bg-primary/90">
                 Message
               </Button>
             </Link>
@@ -142,10 +141,10 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
       <CardContent>
         <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold leading-none text-[#0F1F2F]">
+            <h2 className="text-2xl font-semibold leading-none text-card-foreground">
               {title}
             </h2>
-            <p className="mt-2 text-sm text-[#5F6368]">{subtitle}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
           </div>
 
           <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
@@ -153,7 +152,7 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
               <Button
                 key={label}
                 size="sm"
-                className="rounded-full bg-[#4B8DB3] text-xs text-white hover:bg-[#4B8DB3]/90 cursor-pointer"
+                className="cursor-pointer rounded-full bg-primary text-xs text-primary-foreground hover:bg-primary/90"
               >
                 {label}
               </Button>
@@ -172,17 +171,17 @@ const ArtistOption = ({ name, selected }) => {
     <button className="flex w-25 flex-col items-center p-2 cursor-pointer hover:bg-muted rounded-xl">
       <div className="relative">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
-            selected ? "ring-4 ring-[#4B8DB3]" : ""
+          className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
+            selected ? "ring-4 ring-primary" : ""
           }`}
         >
-          <User className="h-7 w-7 text-[#202124]" strokeWidth={2.5} />
+          <User className="h-7 w-7 text-foreground" strokeWidth={2.5} />
         </div>
 
         {selected && <SelectionCheck />}
       </div>
 
-      <p className="mt-2 text-center text-[11px] leading-tight text-[#0F1F2F]">
+      <p className="mt-2 text-center text-[11px] leading-tight text-foreground">
         {name}
       </p>
     </button>
@@ -194,17 +193,17 @@ const SongOption = ({ name, selected }) => {
     <button className="flex w-25 flex-col items-center p-2 cursor-pointer hover:bg-muted rounded-xl">
       <div className="relative">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border border-[#202124] bg-[#D9D9D9] ${
-            selected ? "ring-4 ring-[#4B8DB3]" : ""
+          className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
+            selected ? "ring-4 ring-primary" : ""
           }`}
         >
-          <Play className="ml-1 h-7 w-7 text-[#202124]" strokeWidth={1.75} />
+          <Play className="ml-1 h-7 w-7 text-foreground" strokeWidth={1.75} />
         </div>
 
         {selected && <SelectionCheck />}
       </div>
 
-      <p className="mt-2 text-center text-[11px] leading-tight text-[#0F1F2F]">
+      <p className="mt-2 text-center text-[11px] leading-tight text-foreground">
         {name}
       </p>
     </button>
@@ -213,8 +212,8 @@ const SongOption = ({ name, selected }) => {
 
 const SelectionCheck = () => {
   return (
-    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#4B8DB3]">
-      <Check className="h-3 w-3 text-white" strokeWidth={3} />
+    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+      <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
     </div>
   );
 };
