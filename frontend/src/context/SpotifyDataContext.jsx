@@ -11,6 +11,7 @@ export function SpotifyDataProvider({ children }) {
     const emptyByRange = () => ({ short_term: [], medium_term: [], long_term: [] });
     const [artists, setArtists] = useState(emptyByRange());
     const [tracks, setTracks] = useState(emptyByRange());
+    const [likedSongs, setLikedSongs] = useState([]);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
 
@@ -18,17 +19,26 @@ export function SpotifyDataProvider({ children }) {
         fetch(`${API_BASE}/${endpoint}?time_range=${timeRange}&limit=${SPOTIFY_ITEM_LIMIT}`, {
             credentials: 'include',
             headers: { Authorization: `Bearer ${token}` },
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`Failed to fetch ${timeRange} ${endpoint}`);
-                return res.json();
-            });
+        }).then(res => {
+            if (!res.ok) throw new Error(`Failed to fetch ${timeRange} ${endpoint}`);
+            return res.json();
+        });
+
+    const fetchLikedSongs = () =>
+        fetch(`${API_BASE}/api/liked-songs?offset=0&limit=50`, {
+            credentials: 'include',
+            headers: { Authorization: `Bearer ${token}` },
+        }).then(res => {
+            if (!res.ok) throw new Error('Failed to fetch liked songs');
+            return res.json();
+        });
 
     useEffect(() => {
         if (!token) {
             hasFetched.current = false;
             setArtists(emptyByRange());
             setTracks(emptyByRange());
+            setLikedSongs([]);
             return;
         }
 
@@ -44,8 +54,9 @@ export function SpotifyDataProvider({ children }) {
             fetchByRange('api/top-tracks', 'short_term'),
             fetchByRange('api/top-tracks', 'medium_term'),
             fetchByRange('api/top-tracks', 'long_term'),
+            fetchLikedSongs(),
         ])
-            .then(([artistsShort, artistsMedium, artistsLong, tracksShort, tracksMedium, tracksLong]) => {
+            .then(([artistsShort, artistsMedium, artistsLong, tracksShort, tracksMedium, tracksLong, likedSongsData]) => {
                 const mapArtists = (data) =>
                     (data.items ?? []).slice(0, SPOTIFY_ITEM_LIMIT).map((artist, index) => ({
                         id: artist.id ?? `spotify-artist-${index + 1}`,
@@ -64,13 +75,14 @@ export function SpotifyDataProvider({ children }) {
                     medium_term: tracksMedium.items ?? [],
                     long_term: tracksLong.items ?? [],
                 });
+                setLikedSongs(likedSongsData.items ?? []);
             })
             .catch(err => console.error('Failed to fetch Spotify data:', err))
             .finally(() => setLoading(false));
     }, [token, authLoading]);
 
     return (
-        <SpotifyDataContext.Provider value={{ artists, tracks, loading }}>
+        <SpotifyDataContext.Provider value={{ artists, tracks, likedSongs, loading }}>
             {children}
         </SpotifyDataContext.Provider>
     );
