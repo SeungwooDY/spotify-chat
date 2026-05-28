@@ -140,7 +140,7 @@ const DiscussionBoard = ( {handleEdit, userData, handleDelete, discussionData, u
             </div>
             <div className="flex-col">
               <p>{discussionData.user_display}</p>
-              <p>{discussionData.created_at_str}</p>
+              <p className="italic text-[0.875rem]">{discussionData.created_at_str}</p>
             </div>
           </div>
           
