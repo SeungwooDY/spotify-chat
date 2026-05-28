@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { User } from "lucide-react";
 
-const SPOTIFY_TOP_ARTISTS_URL =
-  "https://api.spotify.com/v1/me/top/artists?limit=9&time_range=medium_term";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
   id: `dummy-${index + 1}`,
@@ -11,15 +10,11 @@ const DUMMY_ARTISTS = Array.from({ length: 9 }, (_, index) => ({
   spotifyUrl: null,
 }));
 
-const getSpotifyAccessToken = () => {
-  return localStorage.getItem("spotify_access_token");
-};
-
-const getTopArtists = async (accessToken) => {
-  const response = await fetch(SPOTIFY_TOP_ARTISTS_URL, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+const getTopArtists = async () => {
+  const token = sessionStorage.getItem("access_token");
+  const response = await fetch(`${API_BASE}/api/top-artists?limit=9&time_range=medium_term`, {
+    credentials: "include",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   if (!response.ok) {
@@ -40,13 +35,7 @@ const TopArtistsPage = () => {
   const [artists, setArtists] = useState(DUMMY_ARTISTS);
 
   useEffect(() => {
-    const accessToken = getSpotifyAccessToken();
-
-    if (!accessToken) {
-      return;
-    }
-
-    getTopArtists(accessToken)
+    getTopArtists()
       .then((topArtists) => {
         setArtists(topArtists.length > 0 ? topArtists : DUMMY_ARTISTS);
       })

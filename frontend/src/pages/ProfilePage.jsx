@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { User, Play, Check } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -79,6 +80,7 @@ const MOCK_DATA = {
 };
 
 const ProfilePage = () => {
+  const { user } = useAuth();
   const fileInputRef = useRef(null);
   const [profile, setProfile] = useState(null);
   const [artists, setArtists] = useState([]);
@@ -105,14 +107,19 @@ const ProfilePage = () => {
       return;
     }
 
+    // Use AuthContext user data instead of calling /api/me
+    setProfile({
+      display_name: user?.displayName,
+      id: user?.id,
+      images: user?.profileImage ? [{ url: user.profileImage }] : [],
+    });
+
     Promise.all([
-      backendGet("/api/me"),
       backendGet("/api/top-artists?limit=4"),
       backendGet("/api/top-tracks?limit=4"),
       backendGet("/api/profile"),
     ])
-      .then(([profileData, artistsData, tracksData, profileSettings]) => {
-        setProfile(profileData);
+      .then(([artistsData, tracksData, profileSettings]) => {
         setArtists(artistsData.items);
         setTracks(tracksData.items);
 

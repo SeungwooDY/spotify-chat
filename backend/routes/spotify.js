@@ -36,7 +36,7 @@ async function getUserData(req) {
   return null;
 }
 
-// GET /api/me — also re-sets the session cookie if it was resolved via token fallback
+// GET /api/me — returns profile from Firestore (already saved during login)
 router.get("/me", async (req, res) => {
   const userData = await getUserData(req);
   if (!userData) return res.status(401).json({ error: "Not authenticated" });
@@ -45,16 +45,12 @@ router.get("/me", async (req, res) => {
     res.cookie("spotify_user_id", userData.id, { httpOnly: true });
   }
 
-  try {
-    const response = await fetch("https://api.spotify.com/v1/me", {
-      headers: { Authorization: "Bearer " + userData.accessToken },
-    });
-    if (!response.ok) throw new Error(`Spotify error: ${response.status}`);
-    res.json(await response.json());
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch profile" });
-  }
+  res.json({
+    id: userData.id,
+    display_name: userData.displayName,
+    email: userData.email,
+    images: userData.profileImage ? [{ url: userData.profileImage }] : [],
+  });
 });
 
 // GET /api/top-artists

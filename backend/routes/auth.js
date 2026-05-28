@@ -3,7 +3,7 @@ import express from 'express';
 import querystring from 'querystring';
 import crypto from 'crypto';
 import db from '../firebase.js';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
 const router = express.Router();
 const client_id = process.env.SPOTIFY_CLIENT_ID;
@@ -60,26 +60,46 @@ router.get('/callback', async (req, res) => {
     if (!tokenResponse.ok) throw new Error(`Spotify token error: ${tokenResponse.status}`);
     const data = await tokenResponse.json();
 
-    // 2. Use access token to fetch user's Spotify profile
-    const profileResponse = await fetch('https://api.spotify.com/v1/me', {
-      headers: { 'Authorization': 'Bearer ' + data.access_token }
-    });
-    if (!profileResponse.ok) throw new Error(`Spotify profile error: ${profileResponse.status}`);
-    const profile = await profileResponse.json();
+    // 2. Resolve user identity — skip Spotify API call for returning users
+    const existingUserId = req.cookies?.spotify_user_id;
+    let userId = existingUserId;
 
-    // 3. Add the user and tokens to Firestore
-    await setDoc(doc(db, 'users', profile.id), {
-      displayName: profile.display_name,
-      email: profile.email,
-      profileImage: profile.images?.[0]?.url || null,
-      spotifyId: profile.id,
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token,
-      lastLogin: new Date().toISOString(),
-    }, { merge: true });
+    if (existingUserId) {
+      const userDoc = await getDoc(doc(db, 'users', existingUserId));
+      if (userDoc.exists()) {
+        // Returning user: just update tokens, no Spotify API call needed
+        await updateDoc(doc(db, 'users', existingUserId), {
+          accessToken: data.access_token,
+          refreshToken: data.refresh_token,
+          lastLogin: new Date().toISOString(),
+        });
+      } else {
+        userId = null; // stale cookie, fall through to Spotify lookup
+      }
+    }
 
-    // 4. Set session cookie so backend knows who's making future requests
-    res.cookie('spotify_user_id', profile.id, { httpOnly: true });
+    if (!userId) {
+      // New user: fetch profile from Spotify to get their ID
+      const profileResponse = await fetch('https://api.spotify.com/v1/me', {
+        headers: { 'Authorization': 'Bearer ' + data.access_token }
+      });
+      if (!profileResponse.ok) throw new Error(`Spotify profile error: ${profileResponse.status}`);
+      const profile = await profileResponse.json();
+      userId = profile.id;
+
+      await setDoc(doc(db, 'users', userId), {
+        displayName: profile.display_name,
+        email: profile.email,
+        profileImage: profile.images?.[0]?.url || null,
+        spotifyId: userId,
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token,
+        lastLogin: new Date().toISOString(),
+      }, { merge: true });
+    }
+
+    // 3. Set session cookie so backend knows who's making future requests
+    res.cookie('spotify_user_id', userId, { httpOnly: true });
 
     // 5. Redirect to frontend with tokens
     res.redirect(frontend_uri + '/callback#' +
