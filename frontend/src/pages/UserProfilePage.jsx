@@ -98,12 +98,11 @@ const UserProfilePage = () => {
           </div>
         </section>
 
-        {/* RIGHT (MOCK ONLY) */}
+        {/* RIGHT */}
         <section className="mx-auto flex w-full max-w-155 flex-col gap-5 lg:mx-0">
 
           <FeaturedCard
             title="Featured artists"
-            buttonLabels={["View top artists"]}
           >
             <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4 ">
               {user.featured_artists.map((artist) => (
@@ -118,7 +117,6 @@ const UserProfilePage = () => {
 
           <FeaturedCard
             title="Featured songs"
-            buttonLabels={["View top songs", "View liked songs"]}
           >
             <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
               {user.featured_tracks.map((song) => (
@@ -137,7 +135,7 @@ const UserProfilePage = () => {
   );
 };
 
-const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
+const FeaturedCard = ({ title, children }) => {
   return (
     <Card className="w-full">
       <CardContent>
@@ -146,22 +144,8 @@ const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
             <h2 className="text-2xl font-semibold leading-none text-card-foreground">
               {title}
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
-          </div>
-
-          <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
-            {buttonLabels.map((label) => (
-              <Button
-                key={label}
-                size="sm"
-                className="cursor-pointer rounded-full bg-primary text-xs text-primary-foreground hover:bg-primary/90"
-              >
-                {label}
-              </Button>
-            ))}
           </div>
         </div>
-
         {children}
       </CardContent>
     </Card>
@@ -172,11 +156,7 @@ const ArtistOption = ({ name, image, selected }) => {
   return (
     <button className="flex w-25 flex-col items-center p-2 hover:bg-muted rounded-xl">
       <div className="relative">
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
-            selected ? "ring-4 ring-primary" : ""
-          }`}
-        >
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted">
           <Avatar className="h-12 w-12 text-foreground">
             <AvatarImage src={image} alt={name} />
             <AvatarFallback className="bg-muted">
@@ -184,8 +164,6 @@ const ArtistOption = ({ name, image, selected }) => {
             </AvatarFallback>
           </Avatar>
         </div>
-
-        {selected && <SelectionCheck />}
       </div>
 
       <p className="mt-2 text-center text-[11px] leading-tight text-foreground">
@@ -199,11 +177,7 @@ const SongOption = ({ name, image, selected }) => {
   return (
     <button className="flex w-25 flex-col items-center p-2 hover:bg-muted rounded-xl">
       <div className="relative">
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
-            selected ? "ring-4 ring-primary" : ""
-          }`}
-        >
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted">
           <Avatar className="h-12 w-12 text-foreground">
             <AvatarImage src={image} alt={name} />
             <AvatarFallback className="bg-muted">
@@ -211,22 +185,12 @@ const SongOption = ({ name, image, selected }) => {
             </AvatarFallback>
           </Avatar>
         </div>
-
-        {selected && <SelectionCheck />}
       </div>
 
       <p className="mt-2 text-center text-[11px] leading-tight text-foreground">
         {name}
       </p>
     </button>
-  );
-};
-
-const SelectionCheck = () => {
-  return (
-    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
-      <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
-    </div>
   );
 };
 
