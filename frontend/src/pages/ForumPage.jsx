@@ -4,9 +4,11 @@ import ForumPost from "../components/ForumPost";
 import CreatePost from "@/components/CreatePost";
 import DiscussionBoard from "@/components/DiscussionBoard";
 import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
 
 const ForumPage = () => {
-  // const { user } = useAuth();
+  const { user } = useAuth();
+  const [userData, setUserData] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [openForm, setOpenForm] = useState(false);
   const [allDiscussions, setAllDiscussions] = useState([]);
@@ -27,6 +29,20 @@ const ForumPage = () => {
     }
   }
 
+  // fetch user data from the database
+  useEffect(() => {
+    const fetchCurrentUser = async() => {
+      try {
+        const { data } = await axios.get(`http://localhost:3000/users/${user.id}`);
+        setUserData(data);
+      } catch (error) {
+        console.error(error.response?.data);
+      }
+    }
+    fetchCurrentUser();
+  }, [user])
+
+  // fetch all discussions from database
   useEffect(() => {
     const fetchDiscussions = async () => {
       const { data } = await axios.get('http://localhost:3000/forum');
@@ -49,7 +65,7 @@ const ForumPage = () => {
       postData.sort((a, b) => b.created_at.seconds - a.created_at.seconds);
       setAllDiscussions(postData);
     }
-
+    
     fetchDiscussions();
   }, [refresh, currentDiscussion]);
 
@@ -92,7 +108,7 @@ const ForumPage = () => {
         </section> : null }
 
         {/* open specific post */}
-        {currentDiscussion ?  <DiscussionBoard handleDelete={handleDelete} discussionData={currentDiscussion} updateDiscussion={setCurrentDiscussion}/> : null}
+        {currentDiscussion ?  <DiscussionBoard userData={userData} handleDelete={handleDelete} discussionData={currentDiscussion} updateDiscussion={setCurrentDiscussion}/> : null}
 
         {/* view create post form */}
         {openForm ? <CreatePost closeForm={setOpenForm} setRefresh={setRefresh}/> : null}

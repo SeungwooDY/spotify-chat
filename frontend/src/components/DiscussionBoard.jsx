@@ -7,11 +7,12 @@ import axios from 'axios';
 import ForumReply from './ForumReply';
 
 
-const DiscussionBoard = ( {handleDelete, discussionData, updateDiscussion} ) => {
+const DiscussionBoard = ( {userData, handleDelete, discussionData, updateDiscussion} ) => {
   const { user } = useAuth();
   const [reply, setReply] = useState(null);
   const [allReplies, setAllReplies] = useState(null);
   const [edit, setEdit] = useState(false);
+  const [numReplies, setNumReplies] = useState(0);
 
   const handleLike = async () => {
     // unlike the post
@@ -41,9 +42,15 @@ const DiscussionBoard = ( {handleDelete, discussionData, updateDiscussion} ) => 
       // create a new reply
       } else {
         newReply.discussion_id = discussion_id;
+
+        // temp fields for rendering 
+        newReply.id = numReplies;
+        newReply.likes = [];
+        newReply.imageUrl = userData.images?.[0]?.url || null;
         
         await axios.post("http://localhost:3000/forum/reply", newReply);
-        setAllReplies(prevReplies => [...prevReplies, newReply]);
+        setAllReplies([...allReplies, newReply]);
+        setNumReplies(numReplies+1);
       }
       
       setReply(null); // clear it out
