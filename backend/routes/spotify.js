@@ -55,14 +55,19 @@ router.get("/me", async (req, res) => {
 
 // GET /api/top-artists
 router.get("/top-artists", async (req, res) => {
-  const userData = await getUserData(req);
-  if (!userData) return res.status(401).json({ error: "Not authenticated" });
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Missing token" });
+  }
+
+  const accessToken = authHeader.split(" ")[1];
 
   try {
     const { time_range = "medium_term", limit = 4 } = req.query;
     const response = await fetch(
       `https://api.spotify.com/v1/me/top/artists?time_range=${time_range}&limit=${limit}`,
-      { headers: { Authorization: "Bearer " + userData.accessToken } },
+      { headers: { Authorization: `Bearer ${accessToken}` } },
     );
     if (!response.ok) throw new Error(`Spotify error: ${response.status}`);
     res.json(await response.json());
@@ -74,14 +79,19 @@ router.get("/top-artists", async (req, res) => {
 
 // GET /api/top-tracks
 router.get("/top-tracks", async (req, res) => {
-  const userData = await getUserData(req);
-  if (!userData) return res.status(401).json({ error: "Not authenticated" });
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Missing token" });
+  }
+
+  const accessToken = authHeader.split(" ")[1];
 
   try {
     const { time_range = "medium_term", limit = 20 } = req.query;
     const response = await fetch(
       `https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}&limit=${limit}`,
-      { headers: { Authorization: "Bearer " + userData.accessToken } },
+      { headers: { Authorization: `Bearer ${accessToken}` } },
     );
     if (!response.ok) throw new Error(`Spotify error: ${response.status}`);
     res.json(await response.json());

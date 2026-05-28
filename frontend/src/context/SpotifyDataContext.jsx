@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from './AuthContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const SPOTIFY_ITEM_LIMIT = 10;
 
 const SpotifyDataContext = createContext(null);
 
@@ -14,7 +15,7 @@ export function SpotifyDataProvider({ children }) {
     const hasFetched = useRef(false);
 
     const fetchByRange = (endpoint, timeRange) =>
-        fetch(`${API_BASE}/${endpoint}?time_range=${timeRange}&limit=10`, {
+        fetch(`${API_BASE}/${endpoint}?time_range=${timeRange}&limit=${SPOTIFY_ITEM_LIMIT}`, {
             credentials: 'include',
             headers: { Authorization: `Bearer ${token}` },
         })
@@ -46,7 +47,7 @@ export function SpotifyDataProvider({ children }) {
         ])
             .then(([artistsShort, artistsMedium, artistsLong, tracksShort, tracksMedium, tracksLong]) => {
                 const mapArtists = (data) =>
-                    (data.items ?? []).slice(0, 9).map((artist, index) => ({
+                    (data.items ?? []).slice(0, SPOTIFY_ITEM_LIMIT).map((artist, index) => ({
                         id: artist.id ?? `spotify-artist-${index + 1}`,
                         name: artist.name ?? `Artist ${index + 1}`,
                         imageUrl: artist.images?.[0]?.url ?? null,
