@@ -21,7 +21,7 @@ const TopSongsPage = () => {
   const topFour = tracks.slice(0, 4);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col bg-white text-black md:h-screen">
+    <div className="flex h-[calc(100vh-4rem)] flex-col bg-background text-foreground transition-colors md:h-screen">
       {/* Header */}
       <div className="mx-auto flex w-full max-w-2xl gap-8 px-6 pt-8 pb-6">
         {/* Top 4 album covers - 2x2 grid */}
@@ -39,11 +39,11 @@ const TopSongsPage = () => {
         {/* Title + profile */}
         <div className="flex flex-col justify-center gap-3">
           <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12 border-2 border-white/25 bg-[#E5E5E5]">
+            <Avatar className="h-12 w-12 border-2 border-border bg-muted">
               <AvatarImage src={user?.profileImage}
                 alt={user?.displayName} />
-                  <AvatarFallback className="bg-[#E5E5E5]">
-                    <User className="h-6 w-6 text-[#222222]" strokeWidth={2.5} />
+                  <AvatarFallback className="bg-muted">
+                    <User className="h-6 w-6 text-foreground" strokeWidth={2.5} />
                   </AvatarFallback>
             </Avatar>
             <span className="text-lg font-medium">{user?.displayName}</span>
@@ -57,8 +57,8 @@ const TopSongsPage = () => {
       {/* Scrollable track list */}
       <ol className="w-full flex-1 overflow-y-auto px-6 pb-24">
         {tracks.map((track, index) => (
-          <li key={track.id} className="flex items-center gap-4 border-b border-gray-100 py-3">
-            <span className="w-7 shrink-0 text-right text-lg font-bold text-gray-400">
+          <li key={track.id} className="flex items-center gap-4 border-b border-border py-3">
+            <span className="w-7 shrink-0 text-right text-lg font-bold text-muted-foreground">
               {index + 1}
             </span>
             {track.album?.images?.[0]?.url && (
@@ -70,7 +70,7 @@ const TopSongsPage = () => {
             )}
             <div className="min-w-0">
               <p className="truncate font-medium">{track.name}</p>
-              <p className="truncate text-sm text-gray-500">
+              <p className="truncate text-sm text-muted-foreground">
                 {track.artists?.map(a => a.name).join(', ')}
               </p>
             </div>
