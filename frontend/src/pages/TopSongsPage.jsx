@@ -6,10 +6,11 @@ import { User } from "lucide-react";
 const TopSongsPage = () => {
   const { user, loading: authLoading } = useAuth();
   const { tracks, loading: dataLoading } = useSpotifyData();
+  const currentTracks = tracks.short_term;
 
   if (authLoading || dataLoading) return null;
 
-  const topFour = tracks.slice(0, 4);
+  const topFour = currentTracks.slice(0, 4);
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col bg-background text-foreground transition-colors md:h-screen">
@@ -47,7 +48,7 @@ const TopSongsPage = () => {
         <br />
       {/* Scrollable track list */}
       <ol className="w-full flex-1 overflow-y-auto px-6 pb-24">
-        {tracks.map((track, index) => (
+        {currentTracks.map((track, index) => (
           <li key={track.id} className="flex items-center gap-4 border-b border-border py-3">
             <span className="w-7 shrink-0 text-right text-lg font-bold text-muted-foreground">
               {index + 1}

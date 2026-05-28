@@ -8,15 +8,22 @@ const SpotifyDataContext = createContext(null);
 export function SpotifyDataProvider({ children }) {
     const { token, loading: authLoading } = useAuth();
     const [artists, setArtists] = useState([]);
-    const [tracks, setTracks] = useState([]);
+    const [tracks, setTracks] = useState({ short_term: [], medium_term: [], long_term: [] });
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
+
+    const fetchTracks = (timeRange) =>
+        fetch(`${API_BASE}/api/top-tracks?time_range=${timeRange}&limit=10`, { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch ${timeRange} tracks`);
+                return res.json();
+            });
 
     useEffect(() => {
         if (!token) {
             hasFetched.current = false;
             setArtists([]);
-            setTracks([]);
+            setTracks({ short_term: [], medium_term: [], long_term: [] });
             return;
         }
 
@@ -31,13 +38,11 @@ export function SpotifyDataProvider({ children }) {
                     if (!res.ok) throw new Error('Failed to fetch top artists');
                     return res.json();
                 }),
-            fetch(`${API_BASE}/api/top-tracks?time_range=short_term&limit=10`, { credentials: 'include' })
-                .then(res => {
-                    if (!res.ok) throw new Error('Failed to fetch top tracks');
-                    return res.json();
-                }),
+            fetchTracks('short_term'),
+            fetchTracks('medium_term'),
+            fetchTracks('long_term'),
         ])
-            .then(([artistsData, tracksData]) => {
+            .then(([artistsData, shortTerm, mediumTerm, longTerm]) => {
                 setArtists(
                     (artistsData.items ?? []).slice(0, 9).map((artist, index) => ({
                         id: artist.id ?? `spotify-artist-${index + 1}`,
@@ -46,7 +51,11 @@ export function SpotifyDataProvider({ children }) {
                         spotifyUrl: artist.external_urls?.spotify ?? null,
                     }))
                 );
-                setTracks(tracksData.items ?? []);
+                setTracks({
+                    short_term: shortTerm.items ?? [],
+                    medium_term: mediumTerm.items ?? [],
+                    long_term: longTerm.items ?? [],
+                });
             })
             .catch(err => console.error('Failed to fetch Spotify data:', err))
             .finally(() => setLoading(false));
