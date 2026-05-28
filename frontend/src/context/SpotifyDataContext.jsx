@@ -11,6 +11,7 @@ export function SpotifyDataProvider({ children }) {
     const emptyByRange = () => ({ short_term: [], medium_term: [], long_term: [] });
     const [artists, setArtists] = useState(emptyByRange());
     const [tracks, setTracks] = useState(emptyByRange());
+    const [likedSongs, setLikedSongs] = useState([]);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
 
@@ -45,7 +46,7 @@ export function SpotifyDataProvider({ children }) {
             fetchByRange('api/top-tracks', 'medium_term'),
             fetchByRange('api/top-tracks', 'long_term'),
         ])
-            .then(([artistsShort, artistsMedium, artistsLong, tracksShort, tracksMedium, tracksLong]) => {
+            .then(([artistsShort, artistsMedium, artistsLong, tracksShort, tracksMedium, tracksLong, likedSongsData]) => {
                 const mapArtists = (data) =>
                     (data.items ?? []).slice(0, SPOTIFY_ITEM_LIMIT).map((artist, index) => ({
                         id: artist.id ?? `spotify-artist-${index + 1}`,
@@ -64,13 +65,14 @@ export function SpotifyDataProvider({ children }) {
                     medium_term: tracksMedium.items ?? [],
                     long_term: tracksLong.items ?? [],
                 });
+                setLikedSongs(likedSongsData.items ?? []);
             })
             .catch(err => console.error('Failed to fetch Spotify data:', err))
             .finally(() => setLoading(false));
     }, [token, authLoading]);
 
     return (
-        <SpotifyDataContext.Provider value={{ artists, tracks, loading }}>
+        <SpotifyDataContext.Provider value={{ artists, tracks, likedSongs, loading }}>
             {children}
         </SpotifyDataContext.Provider>
     );
