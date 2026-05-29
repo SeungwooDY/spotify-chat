@@ -35,7 +35,7 @@ const TopArtistsPage = () => {
       <select
         value={timeRange}
         onChange={(e) => setTimeRange(e.target.value)}
-        className="mt-1 w-fit cursor-pointer rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        className="mt-1 mb-[2rem] w-fit cursor-pointer rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
       >
         {TIME_RANGES.map(({ value, label }) => (
           <option key={value} value={value}>{label}</option>
