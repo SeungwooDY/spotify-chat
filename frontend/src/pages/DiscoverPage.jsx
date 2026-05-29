@@ -61,7 +61,7 @@ const DiscoverPage = () => {
         const data = await res.json();
         setUsers(data.filter(u => u.id !== user?.id));
       } catch (err) {
-        console.error("Error fetching users:", err);
+        console.error("Error fetching users:", err.response?.data ?? err);
       } finally {
         setLoading(false);
       }

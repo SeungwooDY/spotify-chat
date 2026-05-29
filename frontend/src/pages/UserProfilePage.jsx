@@ -32,7 +32,7 @@ const UserProfilePage = () => {
         setUser(data);
         setBio(data.bio ?? "");
       } catch (err) {
-        console.error("Error fetching user:", err);
+        console.error("Error fetching user:", err.response?.data ?? err);
       } finally {
         setLoading(false);
       }
