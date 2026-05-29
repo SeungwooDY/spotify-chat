@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { User, Play, Check } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,10 +26,28 @@ const topSongs = [
 
 const UserProfilePage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [user, setUser] = useState(null);
   const [bio, setBio] = useState(mockBio);
   const [loading, setLoading] = useState(true);
+
+  const handleMessage = async () => {
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:3000/messages/conversations",
+        { recipientId: id },
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      navigate(`/inbox/${res.data.id}`);
+    } catch (err) {
+      console.error("Error starting conversation:", err);
+    }
+  };
 
   // fetch specific user
   useEffect(() => {
@@ -90,11 +108,12 @@ const UserProfilePage = () => {
           </div>
 
           <div className="mt-4 flex">
-            <Link to="/inbox" className="flex-1">
-              <Button className="w-full cursor-pointer bg-primary text-xs text-primary-foreground hover:bg-primary/90">
-                Message
-              </Button>
-            </Link>
+            <Button
+              onClick={handleMessage}
+              className="w-full cursor-pointer bg-primary text-xs text-primary-foreground hover:bg-primary/90"
+            >
+              Message
+            </Button>
           </div>
         </section>
 
