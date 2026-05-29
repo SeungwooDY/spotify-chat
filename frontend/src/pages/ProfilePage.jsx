@@ -183,7 +183,7 @@ const ProfilePage = () => {
         .map((a) => ({
           id: a.id,
           name: a.name,
-          imageUrl: a.images?.[2]?.url ?? a.images?.[0]?.url ?? null,
+          imageUrl: a.imageUrl,
         }));
 
       const featuredTracks = tracks
@@ -290,7 +290,7 @@ const ProfilePage = () => {
                 <ArtistOption
                   key={artist.id}
                   name={artist.name}
-                  imageUrl={artist.images?.[2]?.url ?? artist.images?.[0]?.url}
+                  imageUrl={artist.imageUrl}
                   selected={selectedArtists.has(artist.id)}
                   onToggle={() => toggleArtist(artist.id)}
                 />
