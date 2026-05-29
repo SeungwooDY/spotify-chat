@@ -1,5 +1,6 @@
 import { User } from "lucide-react";
 import { useSpotifyData } from "@/context/SpotifyDataContext";
+import { useState } from 'react';
 
 const ARTIST_COUNT = 10;
 
@@ -10,9 +11,17 @@ const DUMMY_ARTISTS = Array.from({ length: ARTIST_COUNT }, (_, index) => ({
   spotifyUrl: null,
 }));
 
+const TIME_RANGES = [
+  { value: 'short_term', label: 'Last 4 Weeks' },
+  { value: 'medium_term', label: 'Last 6 Months' },
+  { value: 'long_term', label: 'All Time' },
+];
+
 const TopArtistsPage = () => {
   const { artists: allArtists } = useSpotifyData();
-  const currentArtists = allArtists.medium_term;
+  const [timeRange, setTimeRange] = useState('short_term');
+  const currentArtists = allArtists[timeRange];
+  
   const artists = currentArtists.length > 0
     ? currentArtists.slice(0, ARTIST_COUNT)
     : DUMMY_ARTISTS;
@@ -22,6 +31,16 @@ const TopArtistsPage = () => {
       <h1 className="mb-6 text-5xl font-bold leading-none md:text-[46px]">
         Top Artists
       </h1>
+
+      <select
+        value={timeRange}
+        onChange={(e) => setTimeRange(e.target.value)}
+        className="mt-1 mb-[2rem] w-fit cursor-pointer rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+      >
+        {TIME_RANGES.map(({ value, label }) => (
+          <option key={value} value={value}>{label}</option>
+        ))}
+      </select>
 
       <div className="grid w-full flex-1 grid-cols-1 content-start justify-items-center gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-y-16 xl:gap-x-24">
         {artists.map((artist, index) => {
