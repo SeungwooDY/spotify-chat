@@ -1,12 +1,20 @@
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useSpotifyData } from '@/context/SpotifyDataContext';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 
+const TIME_RANGES = [
+  { value: 'short_term', label: 'Last 4 Weeks' },
+  { value: 'medium_term', label: 'Last 6 Months' },
+  { value: 'long_term', label: 'All Time' },
+];
+
 const TopSongsPage = () => {
   const { user, loading: authLoading } = useAuth();
   const { tracks, loading: dataLoading } = useSpotifyData();
-  const currentTracks = tracks.short_term;
+  const [timeRange, setTimeRange] = useState('short_term');
+  const currentTracks = tracks[timeRange];
 
   if (authLoading || dataLoading) return null;
 
@@ -43,6 +51,15 @@ const TopSongsPage = () => {
           <h1 className="text-4xl font-bold leading-tight md:text-5xl">
             Top Songs
           </h1>
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            className="mt-1 w-fit cursor-pointer rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          >
+            {TIME_RANGES.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </div>
       </div>
         <br />
