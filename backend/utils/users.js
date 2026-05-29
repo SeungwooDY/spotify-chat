@@ -12,10 +12,9 @@ export async function fetchAllUsers() {
       display_name: data.displayName || "Unknown",
       images: data.profileImage ? [{ url: data.profileImage }] : [],
       bio: data.bio || '',
-      isPublic: data.isPublic !== false,
+      isPublic: data.isPublic,
     };
   })
-  .filter((user) => user.isPublic);
 }
 
 export async function fetchUserById(id) {
