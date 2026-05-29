@@ -26,21 +26,16 @@ const ProfileCard = ({ user }) => (
   </Link>
 );
 
-const ProfileSection = ({ label, profiles, query }) => {
-  const filtered = profiles.filter((p) =>
-    p.display_name.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  if (filtered.length === 0) return null;
+const ProfileSection = ({ label, profiles }) => {
+  if (profiles.length === 0) return null;
 
   return (
     <div className="mb-8">
       <h2 className="text-base text-muted-foreground font-normal mb-4">
         {label}
       </h2>
-
       <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4">
-        {filtered.map((user) => (
+        {profiles.map((user) => (
           <ProfileCard key={user.id} user={user} />
         ))}
       </div>
@@ -75,16 +70,9 @@ const DiscoverPage = () => {
     fetchUsers();
   }, [token, user]);
 
-  const friends = users;
-  const suggested = users;
-  const similar = users;
-
-  const noResults =
-    query &&
-    [...friends, ...suggested, ...similar].every(
-      (p) =>
-        !(p.display_name || "").toLowerCase().includes(query.toLowerCase()),
-    );
+  const filtered = users.filter(u =>
+    u.display_name.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
     <div className="p-6">
@@ -121,33 +109,19 @@ const DiscoverPage = () => {
         <p className="text-sm text-muted-foreground">Loading users...</p>
       )}
 
-      {/* Profile sections */}
-      {/* TODO: replace shared users array with real friend/suggestion/similar logic */}
+      {/* Profile section */}
       {!loading && (
         <>
           <ProfileSection
-            label="Your friends"
-            profiles={friends}
-            query={query}
-          />
-          <ProfileSection
-            label="Suggested for you"
-            profiles={suggested}
-            query={query}
-          />
-          <ProfileSection
-            label="Similar music taste"
-            profiles={similar}
-            query={query}
+            label="People"
+            profiles={filtered}
           />
         </>
       )}
 
       {/* Empty state */}
-      {noResults && (
-        <p className="text-sm text-muted-foreground mt-4">
-          No profiles found for "{query}"
-        </p>
+      {!loading && query && filtered.length === 0 && (
+        <p>No profiles found for "{query}"</p>
       )}
     </div>
   );
