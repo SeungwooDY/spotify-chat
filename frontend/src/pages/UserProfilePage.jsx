@@ -1,28 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { User, Play, Check } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 
-const mockBio = "I like EDM and pop music!";
-
-const topArtists = [
-  { id: 1, name: "Artist Name", selected: true },
-  { id: 2, name: "Artist Name", selected: true },
-  { id: 3, name: "Artist Name", selected: false },
-  { id: 4, name: "Artist Name", selected: false },
-];
-
-const topSongs = [
-  { id: 1, name: "Song Name", selected: true },
-  { id: 2, name: "Song Name", selected: true },
-  { id: 3, name: "Song Name", selected: false },
-  { id: 4, name: "Song Name", selected: false },
-];
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const UserProfilePage = () => {
   const { id } = useParams();
@@ -30,7 +15,7 @@ const UserProfilePage = () => {
   const { token } = useAuth();
 
   const [user, setUser] = useState(null);
-  const [bio, setBio] = useState(mockBio);
+  const [bio, setBio] = useState("");
   const [loading, setLoading] = useState(true);
 
   const handleMessage = async () => {
@@ -51,30 +36,28 @@ const UserProfilePage = () => {
 
   // fetch specific user
   useEffect(() => {
+    if (!id) return;
+
     const fetchUser = async () => {
       try {
         setLoading(true);
-
-        const response = await axios.get(`http://127.0.0.1:3000/users/${id}`);
-
-        setUser(response.data);
+        const res = await fetch(`${API_BASE}/users/${id}`, {
+          credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error(`Failed to fetch user: ${res.status}`);
+        const data = await res.json();
+        setUser(data);
+        setBio(data.bio ?? "");
       } catch (err) {
-        console.error("Error fetching user:", err);
+        console.error("Error fetching user:", err.response?.data ?? err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) fetchUser();
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className="p-6 text-sm text-muted-foreground">
-        Loading profile...
-      </div>
-    );
-  }
+    fetchUser();
+  }, [id, token]);
 
   return (
     <div className="min-h-screen bg-secondary px-6 pt-8 pb-28 text-foreground transition-colors md:px-12 lg:px-16 lg:py-12">
@@ -83,18 +66,32 @@ const UserProfilePage = () => {
         {/* LEFT */}
         <section className="flex flex-col items-center">
 
-          <Avatar className="h-30 w-30 border border-border bg-muted">
-            <AvatarImage src={user.images?.[0]?.url} alt={user.display_name} />
+          <Avatar className="h-36 w-36 ring-2 ring-border ring-offset-2 ring-offset-secondary">
+            {!loading && (
+              <AvatarImage src={user?.images?.[0]?.url} alt={user?.display_name} />
+            )}
             <AvatarFallback className="bg-muted">
-              <User className="h-16 w-16 text-foreground" strokeWidth={2.5} />
+              {loading
+                ? <div className="h-36 w-36 animate-pulse rounded-full bg-muted" />
+                : <User className="h-20 w-20 text-foreground" strokeWidth={2} />
+              }
             </AvatarFallback>
           </Avatar>
 
-          <div className="mt-4 w-full max-w-65">
-            <h1 className="text-2xl font-semibold text-foreground">
-              {user?.display_name}
-            </h1>
-            <p className="mt-1 text-xs text-muted-foreground">@{user.id}</p>
+          <div className="mt-5 w-full max-w-65">
+            {loading ? (
+              <div className="space-y-2">
+                <div className="h-7 w-40 animate-pulse rounded-md bg-muted" />
+                <div className="h-3 w-24 animate-pulse rounded-md bg-muted" />
+              </div>
+            ) : (
+              <>
+                <h1 className="text-2xl font-semibold text-foreground">
+                  {user?.display_name}
+                </h1>
+                <p className="mt-1 text-xs text-muted-foreground">@{user?.id}</p>
+              </>
+            )}
 
             <label className="mt-6 block text-sm font-medium text-foreground">
               Bio
@@ -115,37 +112,42 @@ const UserProfilePage = () => {
               Message
             </Button>
           </div>
+
         </section>
 
-        {/* RIGHT (MOCK ONLY) */}
+        {/* RIGHT */}
         <section className="mx-auto flex w-full max-w-155 flex-col gap-5 lg:mx-0">
 
-          <FeaturedCard
-            title="Featured artists"
-            buttonLabels={["View top artists"]}
-          >
-            <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4 ">
-              {topArtists.map((artist) => (
-                <ArtistOption
-                  key={artist.id}
-                  name={artist.name}
-                />
-              ))}
-            </div>
+          <FeaturedCard title="Featured artists" loading={loading}>
+            {user?.featuredArtists?.length ? (
+              <div className="grid grid-cols-4 gap-4">
+                {user.featuredArtists.map((artist) => (
+                  <ArtistOption
+                    key={artist.id}
+                    name={artist.name}
+                    image={artist.imageUrl}
+                  />
+                ))}
+              </div>
+            ) : (
+              !loading && <p className="text-sm text-muted-foreground">Nothing featured yet.</p>
+            )}
           </FeaturedCard>
 
-          <FeaturedCard
-            title="Featured songs"
-            buttonLabels={["View top songs", "View liked songs"]}
-          >
-            <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
-              {topSongs.map((song) => (
-                <SongOption
-                  key={song.id}
-                  name={song.name}
-                />
-              ))}
-            </div>
+          <FeaturedCard title="Featured songs" loading={loading}>
+            {user?.featuredTracks?.length ? (
+              <div className="grid grid-cols-4 gap-4">
+                {user.featuredTracks.map((song) => (
+                  <SongOption
+                    key={song.id}
+                    name={song.name}
+                    image={song.imageUrl}
+                  />
+                ))}
+              </div>
+            ) : (
+              !loading && <p className="text-sm text-muted-foreground">Nothing featured yet.</p>
+            )}
           </FeaturedCard>
 
         </section>
@@ -154,86 +156,59 @@ const UserProfilePage = () => {
   );
 };
 
-const FeaturedCard = ({ title, subtitle, buttonLabels, children }) => {
+const FeaturedCard = ({ title, loading, children }) => {
   return (
     <Card className="w-full">
       <CardContent>
-        <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold leading-none text-card-foreground">
-              {title}
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
-          </div>
-
-          <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
-            {buttonLabels.map((label) => (
-              <Button
-                key={label}
-                size="sm"
-                className="cursor-pointer rounded-full bg-primary text-xs text-primary-foreground hover:bg-primary/90"
-              >
-                {label}
-              </Button>
+        <h2 className="mb-5 text-2xl font-semibold leading-none text-card-foreground">
+          {title}
+        </h2>
+        {loading ? (
+          <div className="flex gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <div className="h-16 w-16 animate-pulse rounded-full bg-muted" />
+                <div className="h-3 w-14 animate-pulse rounded-md bg-muted" />
+              </div>
             ))}
           </div>
-        </div>
-
-        {children}
+        ) : (
+          children
+        )}
       </CardContent>
     </Card>
   );
 };
 
-const ArtistOption = ({ name, selected }) => {
+const ArtistOption = ({ name, image }) => {
   return (
-    <button className="flex w-25 flex-col items-center p-2 cursor-pointer hover:bg-muted rounded-xl">
-      <div className="relative">
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
-            selected ? "ring-4 ring-primary" : ""
-          }`}
-        >
-          <User className="h-7 w-7 text-foreground" strokeWidth={2.5} />
-        </div>
-
-        {selected && <SelectionCheck />}
-      </div>
-
-      <p className="mt-2 text-center text-[11px] leading-tight text-foreground">
+    <button className="flex w-20 flex-col items-center rounded-xl p-2 transition-colors hover:bg-muted">
+      <Avatar className="h-16 w-16">
+        <AvatarImage src={image} alt={name} />
+        <AvatarFallback className="bg-muted">
+          <User className="h-8 w-8 text-foreground" strokeWidth={2} />
+        </AvatarFallback>
+      </Avatar>
+      <p className="mt-2 w-full text-center text-[11px] leading-tight text-foreground line-clamp-2">
         {name}
       </p>
     </button>
   );
 };
 
-const SongOption = ({ name, selected }) => {
+const SongOption = ({ name, image }) => {
   return (
-    <button className="flex w-25 flex-col items-center p-2 cursor-pointer hover:bg-muted rounded-xl">
-      <div className="relative">
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted ${
-            selected ? "ring-4 ring-primary" : ""
-          }`}
-        >
-          <Play className="ml-1 h-7 w-7 text-foreground" strokeWidth={1.75} />
-        </div>
-
-        {selected && <SelectionCheck />}
-      </div>
-
-      <p className="mt-2 text-center text-[11px] leading-tight text-foreground">
+    <button className="flex w-20 flex-col items-center rounded-xl p-2 transition-colors hover:bg-muted">
+      <Avatar className="h-16 w-16">
+        <AvatarImage src={image} alt={name} />
+        <AvatarFallback className="bg-muted">
+          <Play className="ml-1 h-8 w-8 text-foreground" strokeWidth={1.75} />
+        </AvatarFallback>
+      </Avatar>
+      <p className="mt-2 w-full text-center text-[11px] leading-tight text-foreground line-clamp-2">
         {name}
       </p>
     </button>
-  );
-};
-
-const SelectionCheck = () => {
-  return (
-    <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
-      <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
-    </div>
   );
 };
 
