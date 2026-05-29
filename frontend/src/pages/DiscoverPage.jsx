@@ -70,8 +70,10 @@ const DiscoverPage = () => {
     fetchUsers();
   }, [token, user]);
 
-  const filtered = users.filter(u =>
-    u.display_name.toLowerCase().includes(query.toLowerCase())
+  const filtered = users.filter(
+    (user) =>
+      user.isPublic !== false &&
+      user.display_name.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
