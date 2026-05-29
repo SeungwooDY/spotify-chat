@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { User, Play } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { User, Play, Check } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,12 +12,30 @@ const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const UserProfilePage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { token } = useAuth();
 
   const [user, setUser] = useState(null);
   const [bio, setBio] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const handleMessage = async () => {
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:3000/messages/conversations",
+        { recipientId: id },
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      navigate(`/inbox/${res.data.id}`);
+    } catch (err) {
+      console.error("Error starting conversation:", err);
+    }
+  };
+
+  // fetch specific user
   useEffect(() => {
     if (!id) return;
 
@@ -79,24 +98,20 @@ const UserProfilePage = () => {
               Bio
             </label>
 
-            {loading ? (
-              <div className="mt-2 h-24 w-full animate-pulse rounded-md bg-muted" />
-            ) : (
-              <Textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                className="mt-2 h-24 resize-none border-none bg-card text-sm text-card-foreground shadow-none focus-visible:ring-0"
-              />
-            )}
+            <Textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="mt-2 h-24 resize-none border-none bg-card text-sm text-card-foreground shadow-none focus-visible:ring-0"
+            />
+          </div>
 
-            <Link to="/inbox">
-              <Button
-                disabled={loading}
-                className="mt-3 w-full cursor-pointer bg-primary text-xs text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-              >
-                Message
-              </Button>
-            </Link>
+          <div className="mt-4 flex">
+            <Button
+              onClick={handleMessage}
+              className="w-full cursor-pointer bg-primary text-xs text-primary-foreground hover:bg-primary/90"
+            >
+              Message
+            </Button>
           </div>
 
         </section>

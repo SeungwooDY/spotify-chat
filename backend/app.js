@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.js";
 import spotifyRouter from "./routes/spotify.js";
 import usersRouter from "./routes/users.js";
 import forumRouter from './routes/forum.js';
+import messagesRouter from './routes/messages.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/users", usersRouter);
 
 app.use('/api', spotifyRouter);
 app.use('/forum', forumRouter);
+app.use('/messages', messagesRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
