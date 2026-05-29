@@ -1,7 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
-import db from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -120,28 +118,30 @@ const InboxPage = () => {
     resolve();
   }, [conversationId, token, user, conversations.length]);
 
-  // Real-time messages listener
-  useEffect(() => {
-    if (!conversationId) {
+  // Fetch messages from backend API
+  const fetchMessages = useCallback(async () => {
+    if (!conversationId || !token) {
       setMessages([]);
       return;
     }
+    try {
+      const res = await axios.get(
+        `${API_BASE}/messages/conversations/${conversationId}`,
+        authHeaders
+      );
+      setMessages(res.data);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  }, [conversationId, token]);
 
-    const q = query(
-      collection(db, "conversations", conversationId, "messages"),
-      orderBy("createdAt", "asc")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMessages(msgs);
-    });
-
-    return () => unsubscribe();
-  }, [conversationId]);
+  // Initial fetch + polling for new messages
+  useEffect(() => {
+    fetchMessages();
+    if (!conversationId || !token) return;
+    const interval = setInterval(fetchMessages, 3000);
+    return () => clearInterval(interval);
+  }, [fetchMessages]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -160,6 +160,7 @@ const InboxPage = () => {
         authHeaders
       );
       setNewMessage("");
+      fetchMessages();
     } catch (err) {
       console.error("Error sending message:", err);
     } finally {
@@ -174,7 +175,8 @@ const InboxPage = () => {
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp.seconds * 1000);
+    const seconds = timestamp._seconds ?? timestamp.seconds;
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(seconds * 1000);
     const now = new Date();
     const diff = now - date;
     if (diff < 86400000) {
