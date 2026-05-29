@@ -4,9 +4,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useState } from 'react';
 import axios from 'axios';
+import ConfirmDelete from "./ConfirmDelete";
 
 const ForumReply = ({reply, isEditing, handleDelete, canEdit, user_id}) => {
   const [likes, setLikes] = useState(reply.likes);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const handleLike = async () => {
     let updatedLikes;
@@ -50,9 +52,11 @@ const ForumReply = ({reply, isEditing, handleDelete, canEdit, user_id}) => {
         />
         { canEdit ? <SquarePen onClick={() => {
           isEditing({...reply})}} className="icon-button-small"/> : null }
-        { canEdit ? <Trash onClick={() => handleDelete(reply.id)} className="icon-button-small" /> : null }
+        { canEdit ? <Trash onClick={() => setOpenConfirmation(prevState=>!prevState)} className="icon-button-small" /> : null }
       </div>
       <p className="pl-[3.5rem]"> {reply.message} </p>
+
+      {openConfirmation ? <ConfirmDelete closeForm={setOpenConfirmation} confirmDelete={handleDelete} discussion_id={reply.id}/> : null }
     </>
   );
 }

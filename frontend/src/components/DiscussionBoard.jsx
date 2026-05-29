@@ -5,6 +5,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {ArrowLeft, Heart, Ban, SquarePen, Trash, SendHorizontal, MessageSquareQuote} from 'lucide-react';
 import axios from 'axios';
 import ForumReply from './ForumReply';
+import ConfirmDelete from "@/components/ConfirmDelete";
+
 
 
 const DiscussionBoard = ( {handleEdit, userData, handleDelete, discussionData, updateDiscussion} ) => {
@@ -14,6 +16,7 @@ const DiscussionBoard = ( {handleEdit, userData, handleDelete, discussionData, u
   const [edit, setEdit] = useState(false);
   const [editPost, setEditPost] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(discussionData.message);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const handleLike = async () => {
     // unlike the post
@@ -121,7 +124,7 @@ const DiscussionBoard = ( {handleEdit, userData, handleDelete, discussionData, u
           {user.id === discussionData.user_id ? 
           <div className="flex justify-end gap-[1rem]">
             <SquarePen onClick={() => setEditPost(prevState=>!prevState)} className="icon-button"/>
-            <Trash onClick={() => handleDelete(discussionData.id)} className="icon-button"/>
+            <Trash onClick={() => setOpenConfirmation(prevState=>!prevState)} className="icon-button"/>
           </div> : null }
           
           <div className="flex items-center gap-[1rem]">
@@ -208,6 +211,7 @@ const DiscussionBoard = ( {handleEdit, userData, handleDelete, discussionData, u
           </section> : null}
       
       </section>
+      {openConfirmation ? <ConfirmDelete closeForm={setOpenConfirmation} confirmDelete={handleDelete} discussion_id={discussionData.id}/> : null }
     </>
   );
 }
