@@ -69,6 +69,10 @@ const router = createBrowserRouter([
         element: <InboxPage />,
       },
       {
+        path: "inbox/:conversationId",
+        element: <InboxPage />,
+      },
+      {
         path: "profile",
         element: <ProfilePage />,
       },
