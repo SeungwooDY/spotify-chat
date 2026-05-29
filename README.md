@@ -12,6 +12,10 @@ Built with React, Express, and Firebase.
 - [Installation](#installation)
 - [How to Use](#how-to-use)
 - [Features and Status](#features-and-status)
+- [Challenges](#challenges)
+- [Risks and Proposed Solutions](#risks-and-proposed-solutions)
+- [Known Issues](#known-issues)
+- [Future Goals](#future-goals)
 - [Credits](#credits)
 
 ---
@@ -87,16 +91,65 @@ App runs at `http://127.0.0.1:5173`.
 
 ## Features and Status
 
-| Feature | Description | Status |
-|---------|-------------|--------|
-| Login / Auth | Spotify OAuth 2.0 login, token exchange handled server-side | Complete |
-| Top Artists | View top artists filterable by time range | In Progress |
-| Top Songs | View top songs filterable by time range | In Progress |
-| Liked Songs | Browse saved/liked tracks with album art | In Progress |
-| Profile Page | Edit bio, featured artists/songs, public/private toggle | In Progress |
-| Discover | Browse all public user profiles | In Progress |
-| Inbox | Direct messaging between users | In Progress |
-| Forums | Discussion boards with search, create post, and likes | In Progress |
+| Feature      | Description                                                 | Status      |
+| ------------ | ----------------------------------------------------------- | ----------- |
+| Login / Auth | Spotify OAuth 2.0 login, token exchange handled server-side | Complete    |
+| Top Artists  | View top artists filterable by time range                   | In Progress |
+| Top Songs    | View top songs filterable by time range                     | In Progress |
+| Liked Songs  | Browse saved/liked tracks with album art                    | In Progress |
+| Profile Page | Edit bio, featured artists/songs, public/private toggle     | In Progress |
+| Discover     | Browse all public user profiles                             | In Progress |
+| Inbox        | Direct messaging between users                              | In Progress |
+| Forums       | Discussion boards with search, create post, and likes       | In Progress |
+
+---
+
+## Challenges
+
+### Spotify Authentication
+
+Managing OAuth tokens securely proved tricky. Handling token expiry, implementing refresh flows, and getting session cookies to work consistently across the frontend and backend required significant iteration before landing on a stable approach.
+
+### Spotify API Rate Limiting
+
+Hitting Spotify's rate limits during development repeatedly locked us out for hours at a time, forcing us to create new developer accounts just to keep testing. This slowed down iteration significantly and made it hard to test features end-to-end without interruption.
+
+### Version Control
+
+Coordinating across a team of 5 meant dealing with frequent merge conflicts. Keeping everyone aligned on API endpoint names, shared environment files, and folder structure required constant communication and occasional painful rebases.
+
+---
+
+## Risks and Proposed Solutions
+
+### Inbox Access
+
+**Risk:** Direct message conversations are not currently protected. Any authenticated user can potentially access a conversation they are not a participant in.
+
+**Solution:** Before returning any conversation data, check that the requesting user's ID is present in the conversation's participants list. Deny access if it is not.
+
+### Authentication
+
+**Risk:** Multiple authentication methods are in use (browser cookies, `sessionStorage`, and Firestore-stored data), which creates overlap and inconsistency in how the app determines who is logged in.
+
+**Solution:** Consolidate to a single source of truth for authentication state to prevent conflicts and reduce surface area for bugs.
+
+---
+
+## Known Issues
+
+- **Logout button** — The logout button in the UI does not currently call the logout function. Clicking it has no effect.
+
+---
+
+## Future Goals
+
+| Goal                    | Description                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------------- |
+| Compatibility Scoring   | Develop an algorithm that compares users' top artists and songs to generate a match percentage |
+| Forum Board Tags        | Let users tag forum posts and search or filter by tag                                          |
+| Friends & Following     | Build your own network by following other users                                                |
+| Live Listening Activity | See what your friends are playing right now                                                    |
 
 ---
 
