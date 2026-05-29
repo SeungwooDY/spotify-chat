@@ -4,17 +4,25 @@ import { useState, useEffect } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "lucide-react";
 
+const TIME_RANGES = [
+  { value: 'short_term', label: 'Last 4 Weeks' },
+  { value: 'medium_term', label: 'Last 6 Months' },
+  { value: 'long_term', label: 'All Time' },
+];
+
 const TopSongsPage = () => {
   const { user, loading } = useAuth();
   const [tracks, setTracks] = useState([]);
   const [fetchingTracks, setFetchingTracks] = useState(true);
+  const [timeRange, setTimeRange] = useState('short_term');
 
   useEffect(() => {
-    getTopTracks('short_term', 10)
+    setFetchingTracks(true);
+    getTopTracks(timeRange, 10)
       .then(data => setTracks(data.items ?? []))
       .catch(err => console.error(err))
       .finally(() => setFetchingTracks(false));
-  }, []);
+  }, [timeRange]);
 
   if (loading || fetchingTracks) return null;
 
@@ -51,6 +59,15 @@ const TopSongsPage = () => {
           <h1 className="text-4xl font-bold leading-tight md:text-5xl">
             Top Songs
           </h1>
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            className="mt-1 w-fit cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-black focus:outline-none focus:ring-1 focus:ring-black"
+          >
+            {TIME_RANGES.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </div>
       </div>
         <br />
