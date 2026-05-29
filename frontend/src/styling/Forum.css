@@ -275,6 +275,17 @@
   color: var(--foreground);
 }
 
+@media (max-width: 800px) {
+  .confirm-delete-form, .new-post-form{
+    width: 20rem;
+    height: 20rem;
+  }
+
+  .new-post-textbox {
+    width: 15rem;
+  }
+}
+
 .exit-icon {
   position: absolute;
   top: 0;

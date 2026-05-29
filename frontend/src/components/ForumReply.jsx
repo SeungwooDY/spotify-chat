@@ -31,7 +31,7 @@ const ForumReply = ({reply, isEditing, handleDelete, canEdit, user_id}) => {
 
   return (
     <>
-      <div className="flex m-[0.5rem] gap-[1rem] items-center">
+      <div className="flex flex-wrap m-[0.5rem] gap-[1rem] items-center">
         <Avatar className="size-10">
           <AvatarImage src={reply.imageUrl} alt="profile photo" />
           <AvatarFallback className="bg-muted">
@@ -42,17 +42,23 @@ const ForumReply = ({reply, isEditing, handleDelete, canEdit, user_id}) => {
         <p className="text-[0.875rem] italic">
           {reply.created_at && formatDistanceToNow(reply.created_at.seconds * 1000, { addSuffix: true })}
         </p>
-        <p className="pt-[0.5rem] text-gray-500">
-          {likes.length}
-        </p>
-        <Heart 
+
+        {/* buttons */}
+        <div className="flex items-center gap-[0.875rem] sm: pl-[3rem]">
+          <p className="pt-[0.5rem] text-gray-500">
+            {likes.length}
+          </p>
+          <Heart 
           onClick={() => handleLike()}
           fill={likes.includes(user_id) ? "#4682A9" : "none"} 
           className="icon-button-small" 
-        />
-        { canEdit ? <SquarePen onClick={() => {
-          isEditing({...reply})}} className="icon-button-small"/> : null }
-        { canEdit ? <Trash onClick={() => setOpenConfirmation(prevState=>!prevState)} className="icon-button-small" /> : null }
+          />
+          { canEdit ? <SquarePen onClick={() => {
+            isEditing({...reply})}} className="icon-button-small"/> : null }
+          { canEdit ? <Trash onClick={() => setOpenConfirmation(prevState=>!prevState)} className="icon-button-small" /> : null }
+
+        </div>
+      
       </div>
       <p className="pl-[3.5rem]"> {reply.message} </p>
 

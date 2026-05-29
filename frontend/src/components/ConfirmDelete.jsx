@@ -19,7 +19,7 @@ const ConfirmDelete = ( {closeForm, confirmDelete, discussion_id} ) => {
             <p className="text-[2rem] font-bold">Confirm Delete</p>
             <p>This action cannot be undone</p>
 
-            <div className="flex gap-[1rem]">
+            <div className="flex gap-[1rem] mt-[1rem]">
               <Button
               variant="outline"
               size="sm"
