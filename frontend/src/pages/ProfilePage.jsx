@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from '@/context/AuthContext';
+import { useSpotifyData } from '@/context/SpotifyDataContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -44,7 +46,6 @@ function resizeImage(file, size = 200) {
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext("2d");
-      // Scale to fill and center-crop
       const scale = Math.max(size / img.width, size / img.height);
       const w = img.width * scale;
       const h = img.height * scale;
@@ -80,9 +81,8 @@ const MOCK_DATA = {
 
 const ProfilePage = () => {
   const fileInputRef = useRef(null);
-  const [profile, setProfile] = useState(null);
-  const [artists, setArtists] = useState([]);
-  const [tracks, setTracks] = useState([]);
+  const [mockArtists, setMockArtists] = useState([]);
+  const [mockTracks, setMockTracks] = useState([]);
   const [bio, setBio] = useState("");
   const [isPublic, setIsPublic] = useState(true);
   const [selectedArtists, setSelectedArtists] = useState(new Set());
@@ -96,26 +96,23 @@ const ProfilePage = () => {
   const [justSaved, setJustSaved] = useState(false);
   const [error, setError] = useState(null);
 
+  const { user } = useAuth();
+  const { artists: contextArtists, tracks: contextTracks } = useSpotifyData();
+
+  const isMock = import.meta.env.VITE_MOCK_DATA === "true";
+  const artists = isMock ? mockArtists : contextArtists.medium_term.slice(0, 4);
+  const tracks = isMock ? mockTracks : contextTracks.medium_term.slice(0, 4);
+
   useEffect(() => {
     if (import.meta.env.VITE_MOCK_DATA === "true") {
-      setProfile(MOCK_DATA.profile);
-      setArtists(MOCK_DATA.artists);
-      setTracks(MOCK_DATA.tracks);
+      setMockArtists(MOCK_DATA.artists);
+      setMockTracks(MOCK_DATA.tracks);
       setLoading(false);
       return;
     }
 
-    Promise.all([
-      backendGet("/api/me"),
-      backendGet("/api/top-artists?limit=4"),
-      backendGet("/api/top-tracks?limit=4"),
-      backendGet("/api/profile"),
-    ])
-      .then(([profileData, artistsData, tracksData, profileSettings]) => {
-        setProfile(profileData);
-        setArtists(artistsData.items);
-        setTracks(tracksData.items);
-
+    backendGet("/api/profile")
+      .then((profileSettings) => {
         const initBio = profileSettings.bio || "";
         const initIsPublic = profileSettings.isPublic !== false;
         const initArtists = new Set(
@@ -141,10 +138,9 @@ const ProfilePage = () => {
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    e.target.value = ""; // allow re-selecting the same file
+    e.target.value = "";
     try {
       const resized = await resizeImage(file);
-      setProfile((prev) => ({ ...prev, images: [{ url: resized }] }));
       const res = await fetch(`${API_BASE}/api/profile/photo`, {
         method: "POST",
         credentials: "include",
@@ -187,7 +183,7 @@ const ProfilePage = () => {
         .map((a) => ({
           id: a.id,
           name: a.name,
-          imageUrl: a.images?.[2]?.url ?? a.images?.[0]?.url ?? null,
+          imageUrl: a.imageUrl,
         }));
 
       const featuredTracks = tracks
@@ -235,7 +231,7 @@ const ProfilePage = () => {
           />
 
           <Avatar className="h-30 w-30 border border-[#202124] bg-[#D9D9D9]">
-            <AvatarImage src={profile?.images?.[0]?.url} alt="profile" />
+            <AvatarImage src={user?.profileImage} alt={user?.displayName} />
             <AvatarFallback className="bg-[#D9D9D9]">
               <User className="h-16 w-16 text-[#202124]" strokeWidth={2.5} />
             </AvatarFallback>
@@ -252,9 +248,9 @@ const ProfilePage = () => {
 
           <div className="mt-6 w-full max-w-65">
             <h1 className="text-2xl font-semibold text-[#0F1F2F]">
-              {profile?.display_name}
+              {user?.displayName}
             </h1>
-            <p className="mt-1 text-xs text-[#5F6368]">@{profile?.id}</p>
+            <p className="mt-1 text-xs text-[#5F6368]">@{user?.id}</p>
 
             <label className="mt-6 block text-sm font-medium text-foreground">
               Bio
@@ -294,7 +290,7 @@ const ProfilePage = () => {
                 <ArtistOption
                   key={artist.id}
                   name={artist.name}
-                  imageUrl={artist.images?.[2]?.url ?? artist.images?.[0]?.url}
+                  imageUrl={artist.imageUrl}
                   selected={selectedArtists.has(artist.id)}
                   onToggle={() => toggleArtist(artist.id)}
                 />
